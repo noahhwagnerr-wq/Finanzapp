@@ -1,0 +1,706 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finanzapp</title>
+  <style>
+    :root { --bg: #f3f3ef; --card: #ffffff; --line: #ddddda; --text: #141414; --muted: #777777; --green: #2f9448; --red: #b33a32; --radius: 22px; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif; overflow-x: hidden; }
+    .app { max-width: 430px; margin: 0 auto; padding: 14px 12px 30px; width: 100%; }
+    .title { text-align: center; font-family: Georgia, "Times New Roman", serif; font-size: 32px; font-weight: 400; margin: 8px 0 18px; }
+    .page { display: none; }
+    .page.active { display: block; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .card, form, .navbtn, .entry { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); }
+    .navbtn { width: 100%; padding: 14px; text-align: left; cursor: pointer; min-height: 108px; }
+    .navtitle { font-family: Georgia, "Times New Roman", serif; font-size: 18px; margin-bottom: 8px; }
+    .navsub, .muted, .meta { color: var(--muted); font-size: 14px; line-height: 1.35; }
+    .metric { padding: 16px; min-height: 96px; }
+    .metric-label { color: var(--muted); font-size: 14px; margin-bottom: 10px; }
+    .metric-value { font-size: 20px; font-weight: 700; }
+    .green { color: var(--green); }
+    .red { color: var(--red); }
+    .panel { padding: 16px; margin-top: 14px; }
+    .panel h2 { font-family: Georgia, "Times New Roman", serif; font-size: 28px; font-weight: 400; margin: 0 0 10px; }
+    .back { background: none; border: none; padding: 0; margin: 4px 0 14px; font-size: 15px; font-weight: 600; cursor: pointer; color: #111; }
+    form { padding: 16px; width: 100%; }
+    label { display: block; margin: 12px 0 6px; font-size: 14px; font-weight: 600; }
+    input, select, textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; font-size: 16px; background: #fff; display: block; box-sizing: border-box; }
+    textarea { min-height: 84px; resize: vertical; font-family: inherit; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+    .row > div { width: 100%; display: flex; flex-direction: column; }
+    .row > div label { margin: 12px 0 6px; }
+    .row > div input, .row > div select { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; font-size: 16px; background: #fff; }
+    .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+    .btn { width: 100%; border: none; border-radius: 16px; padding: 13px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .btn-dark { background: #171717; color: #fff; }
+    .btn-light { background: #efefec; color: #171717; border: 1px solid var(--line); }
+    .list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+    .entry { padding: 14px; cursor: pointer; }
+    .entry-top { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    .entry-name { font-weight: 600; }
+    .entry-amount { font-weight: 700; }
+    .entry-date { color: var(--muted); font-size: 13px; }
+    .entry-bottom { display: flex; justify-content: space-between; gap: 10px; }
+    .entry-status { font-size: 12px; padding: 4px 8px; border-radius: 6px; background: #f0f0f0; }
+    .status-open { background: #ffe5e5; color: var(--red); }
+    .status-paid { background: #e5f5e5; color: var(--green); }
+    .status-erledigt { background: #e8e8e8; color: #888888; }
+    .entry-delete { background: none; border: none; color: var(--red); cursor: pointer; font-size: 12px; padding: 0; }
+    .detail-section { margin-top: 16px; }
+    .detail-section h3 { margin: 0 0 10px 0; font-size: 16px; font-weight: 600; font-family: inherit; }
+    .detail-list { display: flex; flex-direction: column; gap: 8px; }
+    .detail-item { padding: 12px; background: #fafafa; border-radius: 10px; border-left: 3px solid var(--line); cursor: pointer; transition: background 0.2s; position: relative; }
+    .detail-item:hover { background: #f0f0f0; }
+    .detail-item.item-erledigt { opacity: 0.5; }
+    .detail-item.item-erledigt .detail-item-name,
+    .detail-item.item-erledigt .detail-item-amount { text-decoration: line-through; }
+    .detail-item-header { display: flex; justify-content: space-between; margin-bottom: 4px; align-items: center; }
+    .detail-item-name { font-weight: 600; font-size: 13px; }
+    .detail-item-amount { font-weight: 700; font-size: 13px; }
+    .detail-item-meta { color: var(--muted); font-size: 12px; }
+    .detail-item-delete { background: none; border: none; color: var(--red); font-size: 16px; cursor: pointer; padding: 2px 6px; line-height: 1; flex-shrink: 0; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center; }
+    .modal.active { display: flex; }
+    .modal-content { background: var(--card); border-radius: var(--radius); width: 90%; max-width: 430px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { padding: 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+    .modal-header h2 { margin: 0; font-size: 18px; font-weight: 600; }
+    .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--muted); padding: 0; }
+    .modal-body { padding: 16px; }
+    /* Action Sheet */
+    .action-sheet { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 2000; }
+    .action-sheet.active { display: block; }
+    .action-sheet-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.45); }
+    .action-sheet-container { position: relative; z-index: 1; padding: 0 10px 30px; max-width: 430px; margin: 0 auto; }
+    .action-sheet-group { background: var(--card); border-radius: 16px; overflow: hidden; margin-bottom: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.14); }
+    .action-sheet-title { padding: 13px 16px 11px; text-align: center; color: var(--muted); font-size: 13px; border-bottom: 1px solid var(--line); }
+    .action-sheet-btn { width: 100%; padding: 16px; border: none; background: transparent; font-size: 16px; cursor: pointer; text-align: center; border-bottom: 1px solid var(--line); font-family: inherit; }
+    .action-sheet-btn:last-child { border-bottom: none; }
+    .action-sheet-btn:active { background: #f0f0f0; }
+    .action-sheet-btn.btn-green { color: var(--green); font-weight: 600; }
+    .action-sheet-btn.btn-red { color: var(--red); }
+    .action-sheet-cancel-btn { width: 100%; padding: 16px; border: none; background: var(--card); border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; text-align: center; font-family: inherit; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .action-sheet-cancel-btn:active { background: #f0f0f0; }
+    /* Notification badge */
+    #notifStatus { font-size: 11px; color: var(--muted); text-align: center; margin-top: 4px; display: none; }
+    /* Notification permission banner */
+    #notifBanner { display: none; background: #fff8e1; border: 1px solid #ffe082; border-radius: 16px; padding: 14px 16px; margin-top: 16px; }
+    #notifBanner p { margin: 0 0 10px; font-size: 14px; color: #555; line-height: 1.4; }
+    #notifBannerBtn { width: 100%; padding: 12px; background: #2f9448; color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    #notifBannerBtn:active { background: #257a3a; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section id="home" class="page active">
+      <h1 class="title">Finanzapp</h1>
+      <div class="grid">
+        <button class="navbtn" onclick="showPage('bekomme')"><div class="navtitle">Ich bekomme</div><div class="navsub">Offene Forderungen verwalten</div></button>
+        <button class="navbtn" onclick="showPage('zahle')"><div class="navtitle">Ich zahle</div><div class="navsub">Eigene Zahlungen im Blick</div></button>
+        <button class="navbtn" onclick="showPage('uebersicht')"><div class="navtitle">Übersicht</div><div class="navsub">Automatische Auswertung</div></button>
+        <button class="navbtn" onclick="showPage('sicherung')"><div class="navtitle">Sicherung</div><div class="navsub">Export und Wiederherstellung</div></button>
+      </div>
+      <div class="grid" style="margin-top: 20px;">
+        <div class="card metric"><div class="metric-label">Gesamtsaldo</div><div id="saldo" class="metric-value">0,00 €</div></div>
+        <div class="card metric"><div class="metric-label">Heute fällig</div><div id="heuteFaellig" class="metric-value">0</div></div>
+        <div class="card metric"><div class="metric-label">Einnahmen</div><div id="monatEinnahmen" class="metric-value green">0,00 €</div></div>
+        <div class="card metric"><div class="metric-label">Ausgaben</div><div id="monatAusgaben" class="metric-value red">0,00 €</div></div>
+      </div>
+      <div id="notifStatus"></div>
+      <div id="notifBanner">
+        <p>🔔 Aktiviere Benachrichtigungen, um täglich an fällige Einträge erinnert zu werden.</p>
+        <button id="notifBannerBtn" onclick="requestNotifPermission()">Benachrichtigungen aktivieren</button>
+      </div>
+      <div style="margin-top: 20px;">
+        <h2 style="font-family: Georgia, serif; font-size: 20px; margin: 0 0 12px; padding: 0 4px;">Heute fällig</h2>
+        <div class="list">
+          <div id="todayList"></div>
+        </div>
+      </div>
+      <div style="margin-top: 20px;">
+        <h2 style="font-family: Georgia, serif; font-size: 20px; margin: 0 0 12px; padding: 0 4px;">Überfällig</h2>
+        <div class="list">
+          <div id="overdueList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="bekomme" class="page">
+      <button class="back" type="button" onclick="showPage('home')">← Zurück</button>
+      <h1 class="title">Ich bekomme</h1>
+      <form id="formBekomme">
+        <label for="bekommeName">Von wem</label><input id="bekommeName" required placeholder="Name">
+        <div class="row">
+          <div><label for="bekommeBetrag">Betrag €</label><input id="bekommeBetrag" type="number" step="0.01" required></div>
+          <div><label for="bekommeDatum">Fällig am</label><input id="bekommeDatum" type="date" required></div>
+        </div>
+        <label for="bekommeStatus">Status</label><select id="bekommeStatus"><option>Offen</option><option>Bezahlt</option><option>Erledigt</option></select>
+        <label for="bekommeNotiz">Notiz</label><textarea id="bekommeNotiz"></textarea>
+        <div class="buttons"><button class="btn btn-dark" type="submit">Speichern</button><button class="btn btn-light" type="reset">Leeren</button></div>
+      </form>
+      <div id="bekommeListe"></div>
+    </section>
+
+    <section id="zahle" class="page">
+      <button class="back" type="button" onclick="showPage('home')">← Zurück</button>
+      <h1 class="title">Ich zahle</h1>
+      <form id="formZahle">
+        <label for="zahleName">An wen</label><input id="zahleName" required placeholder="Name">
+        <div class="row">
+          <div><label for="zahleBetrag">Betrag €</label><input id="zahleBetrag" type="number" step="0.01" required></div>
+          <div><label for="zahleDatum">Fällig am</label><input id="zahleDatum" type="date" required></div>
+        </div>
+        <label for="zahleKategorie">Kategorie</label><select id="zahleKategorie"><option>Lebensmittel</option><option>Wohnen</option><option>Reisen</option><option>Transport</option><option>Gesundheit</option><option>Schulden</option><option>Sonstiges</option></select>
+        <label for="zahleStatus">Status</label><select id="zahleStatus"><option>Offen</option><option>Bezahlt</option><option>Erledigt</option></select>
+        <label for="zahleNotiz">Notiz</label><textarea id="zahleNotiz"></textarea>
+        <div class="buttons"><button class="btn btn-dark" type="submit">Speichern</button><button class="btn btn-light" type="reset">Leeren</button></div>
+      </form>
+      <div id="zahleListe"></div>
+    </section>
+
+    <section id="uebersicht" class="page">
+      <button class="back" type="button" onclick="showPage('home')">← Zurück</button>
+      <h1 class="title">Übersicht</h1>
+      <div class="grid">
+        <div class="card metric"><div class="metric-label">Offene Forderungen</div><div id="offeneForderungen" class="metric-value green">0,00 €</div></div>
+        <div class="card metric"><div class="metric-label">Offene Zahlungen</div><div id="offeneZahlungen" class="metric-value red">0,00 €</div></div>
+        <div class="card metric"><div class="metric-label">Überfällig</div><div id="anzahlUeberfaellig" class="metric-value red">0</div></div>
+        <div class="card metric"><div class="metric-label">Einträge</div><div id="anzahlGesamt" class="metric-value">0</div></div>
+      </div>
+      <div class="card panel">
+        <div id="expenseDetails"></div>
+      </div>
+    </section>
+
+    <div id="editModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modalTitle">Eintrag bearbeiten</h2>
+          <button class="modal-close" onclick="closeEditModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <form id="editForm">
+            <input type="hidden" id="editType">
+            <input type="hidden" id="editId">
+            <label id="editNameLabel">Von wem</label><input id="editName" required placeholder="Name">
+            <div class="row">
+              <div><label for="editBetrag">Betrag €</label><input id="editBetrag" type="number" step="0.01" required></div>
+              <div><label for="editDatum">Fällig am</label><input id="editDatum" type="date" required></div>
+            </div>
+            <label id="editKategorieLabel" for="editKategorie">Kategorie</label><select id="editKategorie" style="display: none;"><option>Lebensmittel</option><option>Wohnen</option><option>Reisen</option><option>Transport</option><option>Gesundheit</option><option>Schulden</option><option>Sonstiges</option></select>
+            <label for="editStatus">Status</label><select id="editStatus"><option>Offen</option><option>Bezahlt</option><option>Erledigt</option></select>
+            <label for="editNotiz">Notiz</label><textarea id="editNotiz"></textarea>
+            <div class="buttons"><button class="btn btn-dark" type="submit">Speichern</button><button class="btn btn-light" type="button" onclick="closeEditModal()">Abbrechen</button></div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Sheet -->
+    <div id="actionSheet" class="action-sheet">
+      <div class="action-sheet-overlay" onclick="closeActionSheet()"></div>
+      <div class="action-sheet-container">
+        <div class="action-sheet-group">
+          <div class="action-sheet-title" id="actionSheetTitle">Eintrag</div>
+          <button class="action-sheet-btn" onclick="actionSheetEdit()">✏️ Bearbeiten</button>
+          <button class="action-sheet-btn btn-green" onclick="actionSheetErledigt()">✓ Erledigt markieren</button>
+          <button class="action-sheet-btn btn-red" onclick="actionSheetDelete()">🗑 Löschen</button>
+        </div>
+        <button class="action-sheet-cancel-btn" onclick="closeActionSheet()">Abbrechen</button>
+      </div>
+    </div>
+
+    <section id="sicherung" class="page">
+      <button class="back" type="button" onclick="showPage('home')">← Zurück</button>
+      <h1 class="title">Sicherung</h1>
+      <div class="card panel">
+        <p>Hier kannst du deine Daten exportieren oder importieren.</p>
+        <div class="buttons">
+          <button class="btn btn-dark" onclick="exportData()">Exportieren</button>
+          <button class="btn btn-light" onclick="document.getElementById('importFile').click()">Importieren</button>
+        </div>
+        <input type="file" id="importFile" style="display: none;" accept=".json" onchange="importData(event)">
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'finanzapp_data';
+
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      if (pageId === 'uebersicht') updateUebersicht();
+      if (pageId === 'home') updateHome();
+    }
+
+    function getData() {
+      const data = localStorage.getItem(STORAGE_KEY);
+      return data ? JSON.parse(data) : { bekomme: [], zahle: [] };
+    }
+
+    function saveData(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      updateHome();
+      updateUebersicht();
+      updateDueCache();
+    }
+
+    function addEntry(type, name, betrag, datum, status, notiz, kategorie = null) {
+      const data = getData();
+      const entry = { id: Date.now(), name, betrag: parseFloat(betrag), datum, status, notiz, kategorie };
+      if (type === 'bekomme') data.bekomme.push(entry);
+      else data.zahle.push(entry);
+      saveData(data);
+      renderLists();
+    }
+
+    function deleteEntry(type, id) {
+      const data = getData();
+      if (type === 'bekomme') data.bekomme = data.bekomme.filter(e => e.id !== id);
+      else data.zahle = data.zahle.filter(e => e.id !== id);
+      saveData(data);
+      renderLists();
+    }
+
+    function markAsErledigt(type, id) {
+      const data = getData();
+      const entries = type === 'bekomme' ? data.bekomme : data.zahle;
+      const entry = entries.find(e => e.id === id);
+      if (entry) {
+        entry.status = 'Erledigt';
+        saveData(data);
+        renderLists();
+        updateUebersicht();
+      }
+    }
+
+    // ── Action Sheet ──────────────────────────────────────────────
+    let _actionType = null;
+    let _actionId   = null;
+
+    function openActionSheet(type, id, name) {
+      _actionType = type;
+      _actionId   = id;
+      document.getElementById('actionSheetTitle').textContent = name;
+      document.getElementById('actionSheet').classList.add('active');
+    }
+
+    function closeActionSheet() {
+      document.getElementById('actionSheet').classList.remove('active');
+    }
+
+    function actionSheetEdit() {
+      closeActionSheet();
+      openEditModal(_actionType, _actionId);
+    }
+
+    function actionSheetErledigt() {
+      closeActionSheet();
+      markAsErledigt(_actionType, _actionId);
+    }
+
+    function actionSheetDelete() {
+      closeActionSheet();
+      deleteEntry(_actionType, _actionId);
+    }
+
+    // ── Render Lists (Bekomme / Zahle pages) ─────────────────────
+    function renderLists() {
+      const data = getData();
+
+      function renderList(entries, containerId, type) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = entries.length === 0
+          ? '<div style="color: var(--muted); text-align: center; padding: 20px;">Keine Einträge</div>'
+          : '';
+        entries.forEach(e => {
+          const item = document.createElement('div');
+          item.className = 'entry';
+          const statusClass = e.status === 'Bezahlt' ? 'status-paid'
+                            : e.status === 'Erledigt' ? 'status-erledigt'
+                            : 'status-open';
+          item.innerHTML = `
+            <div class="entry-top" onclick="openEditModal('${type}', ${e.id})">
+              <div><div class="entry-name">${e.name}</div><div class="entry-date">${e.datum}</div></div>
+              <div class="entry-amount">${e.betrag.toFixed(2)} €</div>
+            </div>
+            <div class="entry-bottom">
+              <span class="entry-status ${statusClass}">${e.status}</span>
+              <button class="entry-delete" onclick="event.stopPropagation(); deleteEntry('${type}', ${e.id})">Löschen</button>
+            </div>
+          `;
+          container.appendChild(item);
+        });
+      }
+
+      renderList(data.bekomme, 'bekommeListe', 'bekomme');
+      renderList(data.zahle, 'zahleListe', 'zahle');
+    }
+
+    // ── Home Screen ───────────────────────────────────────────────
+    function updateHome() {
+      const data = getData();
+      const allEntries = [...data.bekomme, ...data.zahle];
+      const today = new Date().toISOString().split('T')[0];
+
+      // Erledigt entries excluded from financial metrics
+      const activeBekomme = data.bekomme.filter(e => e.status !== 'Erledigt');
+      const activeZahle   = data.zahle.filter(e => e.status !== 'Erledigt');
+
+      const saldo          = activeBekomme.reduce((s, e) => s + e.betrag, 0)
+                           - activeZahle.reduce((s, e) => s + e.betrag, 0);
+      const monatEinnahmen = activeBekomme.reduce((s, e) => s + e.betrag, 0);
+      const monatAusgaben  = activeZahle.reduce((s, e) => s + e.betrag, 0);
+      const heuteFaellig   = allEntries.filter(e => e.datum === today && e.status === 'Offen').length;
+
+      document.getElementById('saldo').textContent         = saldo.toFixed(2) + ' €';
+      document.getElementById('heuteFaellig').textContent  = heuteFaellig;
+      document.getElementById('monatEinnahmen').textContent = monatEinnahmen.toFixed(2) + ' €';
+      document.getElementById('monatAusgaben').textContent  = monatAusgaben.toFixed(2) + ' €';
+
+      const todayEntries   = allEntries.filter(e => e.datum === today && e.status === 'Offen');
+      const overdueEntries = allEntries.filter(e => e.datum < today  && e.status === 'Offen');
+
+      function renderQuickList(entries, containerId) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = entries.length === 0
+          ? '<div style="color: var(--muted); text-align: center; padding: 12px;">Keine Einträge</div>'
+          : '';
+        entries.slice(0, 5).forEach(e => {
+          const item = document.createElement('div');
+          item.className = 'entry';
+          const type = data.bekomme.find(be => be.id === e.id) ? 'bekomme' : 'zahle';
+          item.onclick = () => openEditModal(type, e.id);
+          item.innerHTML = `<div class="entry-top"><div class="entry-name">${e.name}</div><div class="entry-amount">${e.betrag.toFixed(2)} €</div></div>`;
+          container.appendChild(item);
+        });
+      }
+
+      renderQuickList(todayEntries,   'todayList');
+      renderQuickList(overdueEntries, 'overdueList');
+    }
+
+    // ── Übersicht ─────────────────────────────────────────────────
+    function updateUebersicht() {
+      const data = getData();
+      const offeneForderungen = data.bekomme.filter(e => e.status === 'Offen').reduce((s, e) => s + e.betrag, 0);
+      const offeneZahlungen   = data.zahle.filter(e => e.status === 'Offen').reduce((s, e) => s + e.betrag, 0);
+      const today      = new Date().toISOString().split('T')[0];
+      const ueberfaellig    = [...data.bekomme, ...data.zahle].filter(e => e.datum < today && e.status === 'Offen').length;
+      const gesamtEintraege = data.bekomme.length + data.zahle.length;
+
+      document.getElementById('offeneForderungen').textContent = offeneForderungen.toFixed(2) + ' €';
+      document.getElementById('offeneZahlungen').textContent   = offeneZahlungen.toFixed(2) + ' €';
+      document.getElementById('anzahlUeberfaellig').textContent = ueberfaellig;
+      document.getElementById('anzahlGesamt').textContent      = gesamtEintraege;
+
+      const detailContainer = document.getElementById('expenseDetails');
+      detailContainer.innerHTML = '';
+
+      function buildDetailItem(e, type) {
+        const item = document.createElement('div');
+        item.className = 'detail-item' + (e.status === 'Erledigt' ? ' item-erledigt' : '');
+        const statusBadge = e.status === 'Bezahlt' ? 'status-paid'
+                          : e.status === 'Erledigt' ? 'status-erledigt'
+                          : 'status-open';
+        item.innerHTML = `
+          <div class="detail-item-header">
+            <span class="detail-item-name">${e.name}</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="detail-item-amount">${e.betrag.toFixed(2)} €</span>
+              <button class="detail-item-delete" onclick="event.stopPropagation(); deleteEntry('${type}', ${e.id}); updateUebersicht();" title="Löschen">✕</button>
+            </div>
+          </div>
+          <div class="detail-item-meta">
+            ${e.datum} • ${e.kategorie ? e.kategorie + ' • ' : ''}
+            <span class="entry-status ${statusBadge}" style="font-size:11px;padding:2px 6px;">${e.status}</span>
+          </div>
+        `;
+        item.addEventListener('click', () => openActionSheet(type, e.id, e.name));
+        return item;
+      }
+
+      if (data.zahle.length > 0) {
+        const sec = document.createElement('div');
+        sec.className = 'detail-section';
+        sec.innerHTML = '<h3>Ausgaben</h3>';
+        const list = document.createElement('div');
+        list.className = 'detail-list';
+        data.zahle.forEach(e => list.appendChild(buildDetailItem(e, 'zahle')));
+        sec.appendChild(list);
+        detailContainer.appendChild(sec);
+      }
+
+      if (data.bekomme.length > 0) {
+        const sec = document.createElement('div');
+        sec.className = 'detail-section';
+        sec.innerHTML = '<h3>Einnahmen</h3>';
+        const list = document.createElement('div');
+        list.className = 'detail-list';
+        data.bekomme.forEach(e => list.appendChild(buildDetailItem(e, 'bekomme')));
+        sec.appendChild(list);
+        detailContainer.appendChild(sec);
+      }
+
+      if (data.zahle.length === 0 && data.bekomme.length === 0) {
+        detailContainer.innerHTML = '<div style="color: var(--muted); text-align: center; padding: 40px 20px;">Keine Einträge vorhanden</div>';
+      }
+    }
+
+    // ── Forms ─────────────────────────────────────────────────────
+    document.getElementById('formBekomme').addEventListener('submit', (e) => {
+      e.preventDefault();
+      addEntry('bekomme',
+        document.getElementById('bekommeName').value,
+        document.getElementById('bekommeBetrag').value,
+        document.getElementById('bekommeDatum').value,
+        document.getElementById('bekommeStatus').value,
+        document.getElementById('bekommeNotiz').value);
+      e.target.reset();
+      showPage('bekomme');
+    });
+
+    document.getElementById('formZahle').addEventListener('submit', (e) => {
+      e.preventDefault();
+      addEntry('zahle',
+        document.getElementById('zahleName').value,
+        document.getElementById('zahleBetrag').value,
+        document.getElementById('zahleDatum').value,
+        document.getElementById('zahleStatus').value,
+        document.getElementById('zahleNotiz').value,
+        document.getElementById('zahleKategorie').value);
+      e.target.reset();
+      showPage('zahle');
+    });
+
+    // ── Edit Modal ────────────────────────────────────────────────
+    function openEditModal(type, entryId) {
+      const data = getData();
+      const entries = type === 'bekomme' ? data.bekomme : data.zahle;
+      const entry   = entries.find(e => e.id === entryId);
+      if (!entry) return;
+
+      document.getElementById('editType').value   = type;
+      document.getElementById('editId').value     = entryId;
+      document.getElementById('editName').value   = entry.name;
+      document.getElementById('editBetrag').value = entry.betrag;
+      document.getElementById('editDatum').value  = entry.datum;
+      document.getElementById('editStatus').value = entry.status;
+      document.getElementById('editNotiz').value  = entry.notiz || '';
+
+      const kategorieSelect = document.getElementById('editKategorie');
+      if (type === 'zahle') {
+        kategorieSelect.style.display = 'block';
+        document.getElementById('editKategorieLabel').style.display = 'block';
+        kategorieSelect.value = entry.kategorie || 'Lebensmittel';
+      } else {
+        kategorieSelect.style.display = 'none';
+        document.getElementById('editKategorieLabel').style.display = 'none';
+      }
+
+      document.getElementById('editNameLabel').textContent = type === 'bekomme' ? 'Von wem' : 'An wen';
+      document.getElementById('editModal').classList.add('active');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('active');
+    }
+
+    document.getElementById('editForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const type    = document.getElementById('editType').value;
+      const entryId = parseInt(document.getElementById('editId').value);
+      const data    = getData();
+      const entries = type === 'bekomme' ? data.bekomme : data.zahle;
+      const entry   = entries.find(e => e.id === entryId);
+
+      if (entry) {
+        entry.name   = document.getElementById('editName').value;
+        entry.betrag = parseFloat(document.getElementById('editBetrag').value);
+        entry.datum  = document.getElementById('editDatum').value;
+        entry.status = document.getElementById('editStatus').value;
+        entry.notiz  = document.getElementById('editNotiz').value;
+        if (type === 'zahle') {
+          entry.kategorie = document.getElementById('editKategorie').value;
+        }
+        saveData(data);
+        closeEditModal();
+        renderLists();
+        if (type === 'bekomme') showPage('bekomme');
+        else showPage('zahle');
+      }
+    });
+
+    // ── Export / Import ───────────────────────────────────────────
+    function exportData() {
+      const data = getData();
+      const json = JSON.stringify(data, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = 'finanzapp_backup.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+          renderLists();
+          updateHome();
+          updateUebersicht();
+          alert('Daten erfolgreich importiert!');
+        } catch (err) {
+          alert('Fehler beim Importieren der Datei');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // ── Benachrichtigungen ────────────────────────────────────────
+    const NOTIF_LAST_KEY = 'finanzapp_last_notif';
+    const NOTIF_INTERVAL = 5 * 60 * 60 * 1000; // 5 Stunden
+
+    function updateDueCache() {
+      const data  = getData();
+      const today = new Date().toISOString().split('T')[0];
+      const due   = [...data.bekomme, ...data.zahle].filter(e => e.datum === today && e.status === 'Offen');
+      localStorage.setItem('finanzapp_due_today', JSON.stringify(due));
+      if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({ type: 'UPDATE_DUE', entries: due });
+      }
+    }
+
+    function showDueNotification() {
+      if (Notification.permission !== 'granted') return;
+      const due = JSON.parse(localStorage.getItem('finanzapp_due_today') || '[]');
+      if (due.length === 0) return;
+      const last = parseInt(localStorage.getItem(NOTIF_LAST_KEY) || '0');
+      if (Date.now() - last < NOTIF_INTERVAL) return;
+      localStorage.setItem(NOTIF_LAST_KEY, Date.now().toString());
+      new Notification('Finanzapp – Heute fällig', {
+        body: due.length === 1
+          ? `"${due[0].name}" ist heute fällig (${due[0].betrag.toFixed(2)} €)`
+          : `${due.length} Einträge sind heute fällig`,
+        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%232f9448"/><text x="32" y="46" text-anchor="middle" font-size="36" fill="white">€</text></svg>',
+        tag: 'finanzapp-due'
+      });
+    }
+
+    function initNotifications() {
+      if (!('Notification' in window)) return;
+      // Banner anzeigen wenn Berechtigung noch nicht erteilt/verweigert
+      if (Notification.permission === 'default') {
+        document.getElementById('notifBanner').style.display = 'block';
+      }
+      if (Notification.permission === 'granted') {
+        startNotifCycle();
+      }
+    }
+
+    async function requestNotifPermission() {
+      if (!('Notification' in window)) return;
+      const perm = await Notification.requestPermission();
+      document.getElementById('notifBanner').style.display = 'none';
+      if (perm === 'granted') {
+        const el = document.getElementById('notifStatus');
+        el.textContent = '🔔 Benachrichtigungen aktiviert';
+        el.style.display = 'block';
+        setTimeout(() => { el.style.display = 'none'; }, 4000);
+        startNotifCycle();
+        registerSW();
+      }
+    }
+
+    function startNotifCycle() {
+      updateDueCache();
+      // Sofort prüfen beim Start (ohne Intervall-Sperre)
+      const last = parseInt(localStorage.getItem(NOTIF_LAST_KEY) || '0');
+      if (Date.now() - last >= NOTIF_INTERVAL) showDueNotification();
+      // Alle 5 Stunden wiederholen
+      setInterval(() => {
+        updateDueCache();
+        showDueNotification();
+      }, NOTIF_INTERVAL);
+    }
+
+    // ── Service Worker (Hintergrund-Benachrichtigungen) ───────────
+    async function registerSW() {
+      if (!('serviceWorker' in navigator)) return;
+      const swCode = `
+const DUE_CACHE = 'finanzapp-due-v1';
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+self.addEventListener('message', async (event) => {
+  if (event.data && event.data.type === 'UPDATE_DUE') {
+    const cache = await caches.open(DUE_CACHE);
+    await cache.put('due', new Response(JSON.stringify(event.data.entries)));
+  }
+});
+self.addEventListener('periodicsync', async (event) => {
+  if (event.tag === 'finanzapp-check-due') {
+    event.waitUntil(notifyDue());
+  }
+});
+async function notifyDue() {
+  const cache = await caches.open(DUE_CACHE);
+  const resp  = await cache.match('due');
+  if (!resp) return;
+  const due = await resp.json();
+  if (due.length === 0) return;
+  await self.registration.showNotification('Finanzapp – Heute fällig', {
+    body: due.length === 1
+      ? due[0].name + ' ist heute fällig (' + due[0].betrag.toFixed(2) + ' €)'
+      : due.length + ' Einträge sind heute fällig',
+    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%232f9448"/><text x="32" y="46" text-anchor="middle" font-size="36" fill="white">€</text></svg>',
+    tag: 'finanzapp-due',
+    renotify: true
+  });
+}
+`;
+      try {
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(blob);
+        const reg = await navigator.serviceWorker.register(swUrl, { scope: '/' });
+        if ('periodicSync' in reg) {
+          const status = await navigator.permissions.query({ name: 'periodic-background-sync' });
+          if (status.state === 'granted') {
+            await reg.periodicSync.register('finanzapp-check-due', {
+              minInterval: NOTIF_INTERVAL
+            });
+          }
+        }
+      } catch (e) {
+        // SW nicht verfügbar (z. B. lokale Datei) – kein Problem, App-seitige
+        // Benachrichtigungen über setInterval bleiben aktiv
+      }
+    }
+
+    // ── Sichtbarkeit: beim Tab-Wechsel prüfen ─────────────────────
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        updateDueCache();
+        showDueNotification();
+      }
+    });
+
+    // ── Init ──────────────────────────────────────────────────────
+    renderLists();
+    updateHome();
+    initNotifications();
+    // SW nur registrieren wenn Berechtigung bereits vorhanden
+    if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+      registerSW();
+    }
+  </script>
+</body>
+</html>
