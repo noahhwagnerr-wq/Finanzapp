@@ -1,163 +1,413 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Finanzapp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root { --bg: #ffffff; --card: #f5f5f5; --line: #cccccc; --text: #000000; --muted: #666666; --green: #1a6b2c; --red: #991f1f; --radius: 4px; }
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; font-size: 15px; overflow-x: hidden; }
-    .app { max-width: 430px; margin: 0 auto; padding: 16px 14px 40px; width: 100%; }
-    .title { text-align: left; font-size: 22px; font-weight: 700; margin: 0 0 16px; letter-spacing: -0.3px; }
+    :root {
+      --bg:     #F5F3EE;
+      --card:   #FFFFFF;
+      --line:   #E4E1DA;
+      --text:   #1A1A1A;
+      --muted:  #8A8780;
+      --accent: #2C4A3E;
+      --green:  #2D7A50;
+      --red:    #B83A2A;
+      --radius: 10px;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    .app { max-width: 430px; margin: 0 auto; padding: 24px 16px 100px; }
+
+    /* Pages */
     .page { display: none; }
     .page.active { display: block; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .card, form, .navbtn, .entry { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
-    .navbtn { width: 100%; padding: 12px; text-align: left; cursor: pointer; min-height: 80px; }
-    .navtitle { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-    .navsub, .muted, .meta { color: var(--muted); font-size: 13px; line-height: 1.3; }
-    .metric { padding: 12px; min-height: 72px; }
-    .metric-label { color: var(--muted); font-size: 12px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
-    .metric-value { font-size: 18px; font-weight: 700; }
+
+    /* Typography */
+    .title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 40px;
+      font-weight: 500;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      margin-bottom: 22px;
+    }
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.9px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    /* Grid */
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* Cards */
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
+
+    /* Nav Buttons */
+    .navbtn {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      width: 100%; padding: 16px;
+      text-align: left; cursor: pointer;
+      min-height: 90px;
+    }
+    .navbtn:active { background: var(--bg); }
+    .navtitle {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 20px; font-weight: 500;
+      margin-bottom: 5px; color: var(--text);
+    }
+    .navsub { color: var(--muted); font-size: 12px; line-height: 1.4; }
+
+    /* Metrics */
+    .metric { padding: 14px 16px; min-height: 78px; }
+    .metric-label {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.8px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 9px;
+    }
+    .metric-value { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
     .green { color: var(--green); }
-    .red { color: var(--red); }
-    .panel { padding: 14px; margin-top: 10px; }
-    .panel h2 { font-size: 17px; font-weight: 700; margin: 0 0 12px; }
-    form { padding: 14px; width: 100%; }
-    label { display: block; margin: 10px 0 4px; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; }
-    input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius); font-size: 15px; background: #fff; display: block; box-sizing: border-box; font-family: inherit; }
-    input:focus, select:focus, textarea:focus { outline: 2px solid var(--text); outline-offset: -1px; }
-    textarea { min-height: 72px; resize: vertical; font-family: inherit; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
-    .row > div { width: 100%; display: flex; flex-direction: column; }
-    .row > div label { margin: 10px 0 4px; }
-    .row > div input, .row > div select { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius); font-size: 15px; background: #fff; }
-    .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
-    .btn { width: 100%; border: 1px solid var(--line); border-radius: var(--radius); padding: 11px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
-    .btn-dark { background: var(--text); color: #fff; border-color: var(--text); }
-    .btn-light { background: #fff; color: var(--text); }
-    .list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
-    .entry { padding: 12px; cursor: pointer; }
-    .entry-top { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
-    .entry-name { font-weight: 600; font-size: 14px; }
-    .entry-amount { font-weight: 700; font-size: 14px; }
-    .entry-date { color: var(--muted); font-size: 12px; }
-    .entry-bottom { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
-    .entry-status { font-size: 11px; padding: 2px 6px; border-radius: 2px; background: #e8e8e8; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
-    .status-open { background: #fce8e8; color: var(--red); }
-    .status-paid { background: #e4f0e8; color: var(--green); }
-    .status-erledigt { background: #e8e8e8; color: #999; }
-    .entry-delete { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 12px; padding: 0; font-family: inherit; }
-    .detail-section { margin-top: 14px; }
-    .detail-section h3 { margin: 0 0 8px; font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
+    .red   { color: var(--red); }
+
+    /* Panel */
+    .panel { padding: 18px; margin-top: 12px; }
+    .panel h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 22px; font-weight: 500; margin-bottom: 14px;
+    }
+
+    /* Forms */
+    form {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px; width: 100%;
+    }
+    label {
+      display: block;
+      margin: 13px 0 5px;
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.7px; text-transform: uppercase;
+      color: var(--muted);
+    }
+    input, select, textarea {
+      width: 100%; padding: 11px 13px;
+      border: 1px solid var(--line); border-radius: 6px;
+      font-size: 15px; font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg); color: var(--text);
+      display: block; -webkit-appearance: none; appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none; border-color: var(--accent); background: #fff;
+    }
+    textarea { min-height: 72px; resize: vertical; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .row > div { display: flex; flex-direction: column; }
+
+    /* Buttons */
+    .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+    .btn {
+      width: 100%; border: 1px solid var(--line); border-radius: 6px;
+      padding: 12px; font-size: 14px; font-weight: 600;
+      cursor: pointer; font-family: 'Inter', system-ui, sans-serif;
+    }
+    .btn-dark  { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .btn-dark:active  { opacity: 0.85; }
+    .btn-light { background: var(--card); color: var(--text); }
+    .btn-light:active { background: var(--bg); }
+
+    /* Sort bar */
+    .sort-bar { display: flex; gap: 6px; margin: 16px 0 10px; flex-wrap: wrap; }
+    .sort-btn {
+      padding: 5px 13px;
+      border: 1px solid var(--line); border-radius: 20px;
+      background: var(--card); font-size: 12px; font-weight: 500;
+      cursor: pointer; color: var(--muted); font-family: inherit;
+    }
+    .sort-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* Lists */
+    .list { display: flex; flex-direction: column; gap: 6px; }
+    .entry {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 13px 14px; cursor: pointer;
+    }
+    .entry-top { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 7px; align-items: flex-start; }
+    .entry-name  { font-weight: 600; font-size: 14px; }
+    .entry-amount { font-weight: 700; font-size: 14px; flex-shrink: 0; }
+    .entry-date  { color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .entry-bottom { display: flex; justify-content: space-between; align-items: center; }
+    .entry-status {
+      font-size: 10px; padding: 3px 8px; border-radius: 4px;
+      font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase;
+    }
+    .status-open    { background: #FCEAE7; color: var(--red); }
+    .status-paid    { background: #E4F2EB; color: var(--green); }
+    .status-erledigt { background: #EDECEB; color: #999; }
+    .entry-delete {
+      background: none; border: none; color: var(--muted);
+      cursor: pointer; font-size: 12px; font-family: inherit;
+    }
+
+    /* Empty state */
+    .empty-state { text-align: center; padding: 30px 16px; color: var(--muted); }
+    .empty-state-icon { font-size: 26px; margin-bottom: 8px; }
+    .empty-state-text { font-size: 13px; line-height: 1.6; }
+
+    /* Detail items (Übersicht) */
+    .detail-section { margin-top: 16px; }
+    .detail-section h3 {
+      font-size: 10px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.8px; color: var(--muted); margin-bottom: 8px;
+    }
     .detail-list { display: flex; flex-direction: column; gap: 4px; }
-    .detail-item { padding: 10px 12px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); cursor: pointer; position: relative; }
-    .detail-item:hover { background: var(--card); }
-    .detail-item.item-erledigt { opacity: 0.45; }
+    .month-group  { margin-bottom: 14px; }
+    .month-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .month-label  { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); }
+    .month-total  { font-size: 12px; font-weight: 700; }
+    .detail-item {
+      padding: 10px 12px; background: var(--bg);
+      border: 1px solid var(--line); border-radius: 6px; cursor: pointer;
+    }
+    .detail-item:hover { background: #EBE8E2; }
+    .detail-item.item-erledigt { opacity: 0.4; }
     .detail-item.item-erledigt .detail-item-name,
     .detail-item.item-erledigt .detail-item-amount { text-decoration: line-through; }
     .detail-item-header { display: flex; justify-content: space-between; margin-bottom: 3px; align-items: center; }
-    .detail-item-name { font-weight: 600; font-size: 13px; }
+    .detail-item-name   { font-weight: 600; font-size: 13px; }
     .detail-item-amount { font-weight: 700; font-size: 13px; }
-    .detail-item-meta { color: var(--muted); font-size: 12px; }
-    .detail-item-delete { background: none; border: none; color: var(--muted); font-size: 14px; cursor: pointer; padding: 2px 4px; line-height: 1; flex-shrink: 0; }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1000; align-items: center; justify-content: center; }
+    .detail-item-meta   { color: var(--muted); font-size: 12px; }
+    .detail-item-delete {
+      background: none; border: none; color: var(--muted);
+      font-size: 14px; cursor: pointer; padding: 2px 4px; line-height: 1; flex-shrink: 0;
+    }
+
+    /* FAB */
+    .fab {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 28px; padding: 15px 32px;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+      font-family: 'Inter', system-ui, sans-serif;
+      letter-spacing: 0.2px; z-index: 100; display: none;
+      box-shadow: 0 4px 16px rgba(44,74,62,0.28);
+    }
+    .fab:active { opacity: 0.88; }
+
+    /* Modal */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.32); z-index: 1000; align-items: center; justify-content: center; }
     .modal.active { display: flex; }
-    .modal-content { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); width: 92%; max-width: 430px; max-height: 90vh; overflow-y: auto; }
-    .modal-header { padding: 14px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
-    .modal-header h2 { margin: 0; font-size: 16px; font-weight: 700; }
-    .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--muted); padding: 0; font-family: inherit; }
-    .modal-body { padding: 14px; }
+    .modal-content {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--radius); width: 92%; max-width: 430px;
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal-header {
+      padding: 16px 18px; border-bottom: 1px solid var(--line);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .modal-header h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 22px; font-weight: 500;
+    }
+    .modal-close {
+      background: none; border: none; font-size: 20px;
+      cursor: pointer; color: var(--muted); font-family: inherit;
+    }
+    .modal-body { padding: 16px 18px; }
+
     /* Action Sheet */
-    .action-sheet { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 2000; }
+    .action-sheet { display: none; position: fixed; inset: 0; z-index: 2000; }
     .action-sheet.active { display: block; }
-    .action-sheet-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.35); }
-    .action-sheet-container { position: relative; z-index: 1; padding: 0 10px 24px; max-width: 430px; margin: 0 auto; }
-    .action-sheet-group { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; margin-bottom: 8px; }
-    .action-sheet-title { padding: 11px 14px; text-align: center; color: var(--muted); font-size: 12px; border-bottom: 1px solid var(--line); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
-    .action-sheet-btn { width: 100%; padding: 14px; border: none; background: transparent; font-size: 15px; cursor: pointer; text-align: center; border-bottom: 1px solid var(--line); font-family: inherit; }
+    .action-sheet-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.28); }
+    .action-sheet-container { position: absolute; bottom: 0; left: 0; right: 0; padding: 0 12px 28px; max-width: 430px; margin: 0 auto; }
+    .action-sheet-group {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--radius); overflow: hidden; margin-bottom: 8px;
+    }
+    .action-sheet-title {
+      padding: 12px 16px; text-align: center;
+      color: var(--muted); font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--line);
+    }
+    .action-sheet-btn {
+      width: 100%; padding: 15px; border: none; background: transparent;
+      font-size: 15px; cursor: pointer; text-align: center;
+      border-bottom: 1px solid var(--line); font-family: inherit;
+    }
     .action-sheet-btn:last-child { border-bottom: none; }
-    .action-sheet-btn:active { background: var(--card); }
+    .action-sheet-btn:active { background: var(--bg); }
     .action-sheet-btn.btn-green { color: var(--green); font-weight: 600; }
-    .action-sheet-btn.btn-red { color: var(--red); }
-    .action-sheet-cancel-btn { width: 100%; padding: 14px; border: 1px solid var(--line); background: #fff; border-radius: var(--radius); font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; font-family: inherit; }
-    .action-sheet-cancel-btn:active { background: var(--card); }
-    /* Notification badge */
-    #notifStatus { font-size: 12px; color: var(--muted); text-align: center; margin-top: 6px; display: none; }
-    /* Notification permission banner */
-    #notifBanner { display: none; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; margin-top: 14px; }
-    #notifBanner p { margin: 0 0 10px; font-size: 13px; color: var(--muted); line-height: 1.4; }
-    #notifBannerBtn { width: 100%; padding: 10px; background: var(--text); color: #fff; border: none; border-radius: var(--radius); font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
-    #notifBannerBtn:active { opacity: 0.8; }
+    .action-sheet-btn.btn-red   { color: var(--red); }
+    .action-sheet-cancel-btn {
+      width: 100%; padding: 15px; border: 1px solid var(--line);
+      background: var(--card); border-radius: var(--radius);
+      font-size: 15px; font-weight: 700; cursor: pointer;
+      text-align: center; font-family: inherit;
+    }
+    .action-sheet-cancel-btn:active { background: var(--bg); }
+
+    /* Swipe hint */
+    .swipe-hint {
+      position: fixed; bottom: 86px; left: 50%; transform: translateX(-50%);
+      background: rgba(26,26,26,0.75); color: #fff;
+      padding: 9px 20px; border-radius: 20px; font-size: 13px;
+      z-index: 500; pointer-events: none;
+      opacity: 0; transition: opacity 0.4s;
+      white-space: nowrap;
+    }
+    .swipe-hint.show { opacity: 1; }
+
+    /* Notification */
+    #notifStatus { font-size: 12px; color: var(--muted); text-align: center; margin-top: 8px; display: none; }
+    #notifBanner {
+      display: none; background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 14px 16px; margin-top: 14px;
+    }
+    #notifBanner p { font-size: 13px; color: var(--muted); line-height: 1.55; margin-bottom: 12px; }
+    #notifBannerBtn {
+      width: 100%; padding: 11px; background: var(--accent); color: #fff;
+      border: none; border-radius: 6px; font-size: 14px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+    }
+    #notifBannerBtn:active { opacity: 0.85; }
   </style>
 </head>
 <body>
   <div class="app">
+
+    <!-- Home -->
     <section id="home" class="page active">
       <h1 class="title">Finanzapp</h1>
       <div class="grid">
-        <button class="navbtn" onclick="showPage('bekomme')"><div class="navtitle">Ich bekomme</div><div class="navsub">Offene Forderungen verwalten</div></button>
-        <button class="navbtn" onclick="showPage('zahle')"><div class="navtitle">Ich zahle</div><div class="navsub">Eigene Zahlungen im Blick</div></button>
-        <button class="navbtn" onclick="showPage('uebersicht')"><div class="navtitle">Übersicht</div><div class="navsub">Automatische Auswertung</div></button>
-        <button class="navbtn" onclick="showPage('sicherung')"><div class="navtitle">Sicherung</div><div class="navsub">Export und Wiederherstellung</div></button>
+        <button class="navbtn" onclick="showPage('bekomme')">
+          <div class="navtitle">Ich bekomme</div>
+          <div class="navsub">Offene Forderungen verwalten</div>
+        </button>
+        <button class="navbtn" onclick="showPage('zahle')">
+          <div class="navtitle">Ich zahle</div>
+          <div class="navsub">Eigene Zahlungen im Blick</div>
+        </button>
+        <button class="navbtn" onclick="showPage('uebersicht')">
+          <div class="navtitle">Übersicht</div>
+          <div class="navsub">Automatische Auswertung</div>
+        </button>
+        <button class="navbtn" onclick="showPage('sicherung')">
+          <div class="navtitle">Sicherung</div>
+          <div class="navsub">Export und Wiederherstellung</div>
+        </button>
       </div>
-      <div class="grid" style="margin-top: 20px;">
-        <div class="card metric"><div class="metric-label">Gesamtsaldo</div><div id="saldo" class="metric-value">0,00 €</div></div>
+      <div class="grid" style="margin-top: 12px;">
+        <div class="card metric"><div class="metric-label">Saldo</div><div id="saldo" class="metric-value">0,00 €</div></div>
         <div class="card metric"><div class="metric-label">Heute fällig</div><div id="heuteFaellig" class="metric-value">0</div></div>
         <div class="card metric"><div class="metric-label">Einnahmen</div><div id="monatEinnahmen" class="metric-value green">0,00 €</div></div>
         <div class="card metric"><div class="metric-label">Ausgaben</div><div id="monatAusgaben" class="metric-value red">0,00 €</div></div>
       </div>
       <div id="notifStatus"></div>
       <div id="notifBanner">
-        <p>🔔 Aktiviere Benachrichtigungen, um täglich an fällige Einträge erinnert zu werden.</p>
+        <p>Aktiviere Benachrichtigungen, um täglich an fällige Einträge erinnert zu werden.</p>
         <button id="notifBannerBtn" onclick="requestNotifPermission()">Benachrichtigungen aktivieren</button>
       </div>
-      <div style="margin-top: 18px;">
-        <h2 style="font-size: 14px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; margin: 0 0 8px;">Heute fällig</h2>
-        <div class="list">
-          <div id="todayList"></div>
-        </div>
+      <div style="margin-top: 24px;">
+        <div class="section-label">Heute fällig</div>
+        <div class="list" id="todayList"></div>
       </div>
-      <div style="margin-top: 18px;">
-        <h2 style="font-size: 14px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; margin: 0 0 8px;">Überfällig</h2>
-        <div class="list">
-          <div id="overdueList"></div>
-        </div>
+      <div style="margin-top: 22px;">
+        <div class="section-label">Überfällig</div>
+        <div class="list" id="overdueList"></div>
       </div>
     </section>
 
+    <!-- Ich bekomme -->
     <section id="bekomme" class="page">
       <h1 class="title">Ich bekomme</h1>
       <form id="formBekomme">
-        <label for="bekommeName">Von wem</label><input id="bekommeName" required placeholder="Name">
+        <label for="bekommeName">Von wem</label>
+        <input id="bekommeName" required placeholder="Name">
         <div class="row">
-          <div><label for="bekommeBetrag">Betrag €</label><input id="bekommeBetrag" type="number" step="0.01" required></div>
-          <div><label for="bekommeDatum">Fällig am</label><input id="bekommeDatum" type="date" required></div>
+          <div>
+            <label for="bekommeBetrag">Betrag €</label>
+            <input id="bekommeBetrag" type="number" step="0.01" min="0" required placeholder="0,00">
+          </div>
+          <div>
+            <label for="bekommeDatum">Fällig am</label>
+            <input id="bekommeDatum" type="date" required>
+          </div>
         </div>
-        <label for="bekommeStatus">Status</label><select id="bekommeStatus"><option>Offen</option><option>Bezahlt</option><option>Erledigt</option></select>
-        <label for="bekommeNotiz">Notiz</label><textarea id="bekommeNotiz"></textarea>
-        <div class="buttons"><button class="btn btn-dark" type="submit">Speichern</button><button class="btn btn-light" type="reset">Leeren</button></div>
+        <label for="bekommeStatus">Status</label>
+        <select id="bekommeStatus"><option>Offen</option><option>Bezahlt</option><option>Erledigt</option></select>
+        <label for="bekommeNotiz">Notiz</label>
+        <textarea id="bekommeNotiz" placeholder="Optional …"></textarea>
+        <div class="buttons">
+          <button class="btn btn-dark" type="submit">Speichern</button>
+          <button class="btn btn-light" type="reset">Leeren</button>
+        </div>
       </form>
-      <div id="bekommeListe"></div>
+      <div class="sort-bar">
+        <button class="sort-btn active" onclick="setSort('bekomme','datum')"  id="sort-bekomme-datum">Datum</button>
+        <button class="sort-btn"        onclick="setSort('bekomme','betrag')" id="sort-bekomme-betrag">Betrag</button>
+        <button class="sort-btn"        onclick="setSort('bekomme','status')" id="sort-bekomme-status">Status</button>
+      </div>
+      <div class="list" id="bekommeListe"></div>
     </section>
 
+    <!-- Ich zahle -->
     <section id="zahle" class="page">
       <h1 class="title">Ich zahle</h1>
       <form id="formZahle">
-        <label for="zahleName">An wen</label><input id="zahleName" required placeholder="Name">
+        <label for="zahleName">An wen</label>
+        <input id="zahleName" required placeholder="Name">
         <div class="row">
-          <div><label for="zahleBetrag">Betrag €</label><input id="zahleBetrag" type="number" step="0.01" required></div>
-          <div><label for="zahleDatum">Fällig am</label><input id="zahleDatum" type="date" required></div>
+          <div>
+            <label for="zahleBetrag">Betrag €</label>
+            <input id="zahleBetrag" type="number" step="0.01" min="0" required placeholder="0,00">
+          </div>
+          <div>
+            <label for="zahleDatum">Fällig am</label>
+            <input id="zahleDatum" type="date" required>
+          </div>
         </div>
-        <label for="zahleKategorie">Kategorie</label><select id="zahleKategorie"><option>Lebensmittel</option><option>Wohnen</option><option>Reisen</option><option>Transport</option><option>Gesundheit</option><option>Schulden</option><option>Sonstiges</option></select>
-        <label for="zahleStatus">Status</label><select id="zahleStatus"><option>Offen</option><option>Bezahlt</option><option>Erledigt</option></select>
-        <label for="zahleNotiz">Notiz</label><textarea id="zahleNotiz"></textarea>
-        <div class="buttons"><button class="btn btn-dark" type="submit">Speichern</button><button class="btn btn-light" type="reset">Leeren</button></div>
+        <label for="zahleKategorie">Kategorie</label>
+        <select id="zahleKategorie">
+          <option>Lebensmittel</option><option>Wohnen</option><option>Reisen</option>
+          <option>Transport</option><option>Gesundheit</option><option>Schulden</option><option>Sonstiges</option>
+        </select>
+        <label for="zahleStatus">Status</label>
+        <select id="zahleStatus"><option>Offen</option><option>Bezahlt</option><option>Erledigt</option></select>
+        <label for="zahleNotiz">Notiz</label>
+        <textarea id="zahleNotiz" placeholder="Optional …"></textarea>
+        <div class="buttons">
+          <button class="btn btn-dark" type="submit">Speichern</button>
+          <button class="btn btn-light" type="reset">Leeren</button>
+        </div>
       </form>
-      <div id="zahleListe"></div>
+      <div class="sort-bar">
+        <button class="sort-btn active" onclick="setSort('zahle','datum')"  id="sort-zahle-datum">Datum</button>
+        <button class="sort-btn"        onclick="setSort('zahle','betrag')" id="sort-zahle-betrag">Betrag</button>
+        <button class="sort-btn"        onclick="setSort('zahle','status')" id="sort-zahle-status">Status</button>
+      </div>
+      <div class="list" id="zahleListe"></div>
     </section>
 
+    <!-- Übersicht -->
     <section id="uebersicht" class="page">
       <h1 class="title">Übersicht</h1>
       <div class="grid">
@@ -171,25 +421,97 @@
       </div>
     </section>
 
+    <!-- Sicherung -->
+    <section id="sicherung" class="page">
+      <h1 class="title">Sicherung</h1>
+      <div class="card panel">
+        <p style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:16px;">Exportiere deine Daten als JSON-Datei oder stelle sie aus einer Sicherungskopie wieder her.</p>
+        <div class="buttons">
+          <button class="btn btn-dark"  onclick="exportData()">Exportieren</button>
+          <button class="btn btn-light" onclick="document.getElementById('importFile').click()">Importieren</button>
+        </div>
+        <input type="file" id="importFile" style="display:none;" accept=".json" onchange="importData(event)">
+      </div>
+    </section>
+
+    <!-- Quick-Add Modal -->
+    <div id="quickAddModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Eintrag erfassen</h2>
+          <button class="modal-close" onclick="closeQuickAdd()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="buttons" style="margin-bottom:16px;">
+            <button class="btn btn-dark"  id="qaTypeBekomme" onclick="setQuickAddType('bekomme')">Ich bekomme</button>
+            <button class="btn btn-light" id="qaTypeZahle"   onclick="setQuickAddType('zahle')">Ich zahle</button>
+          </div>
+          <form id="quickAddForm">
+            <input type="hidden" id="qaType" value="bekomme">
+            <label id="qaNameLabel">Von wem</label>
+            <input id="qaName" required placeholder="Name">
+            <div class="row">
+              <div>
+                <label for="qaBetrag">Betrag €</label>
+                <input id="qaBetrag" type="number" step="0.01" min="0" required placeholder="0,00">
+              </div>
+              <div>
+                <label for="qaDatum">Fällig am</label>
+                <input id="qaDatum" type="date" required>
+              </div>
+            </div>
+            <div id="qaKategorieWrap" style="display:none;">
+              <label for="qaKategorie">Kategorie</label>
+              <select id="qaKategorie">
+                <option>Lebensmittel</option><option>Wohnen</option><option>Reisen</option>
+                <option>Transport</option><option>Gesundheit</option><option>Schulden</option><option>Sonstiges</option>
+              </select>
+            </div>
+            <div class="buttons">
+              <button class="btn btn-dark"  type="submit">Speichern</button>
+              <button class="btn btn-light" type="button" onclick="closeQuickAdd()">Abbrechen</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
     <div id="editModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
-          <h2 id="modalTitle">Eintrag bearbeiten</h2>
+          <h2>Eintrag bearbeiten</h2>
           <button class="modal-close" onclick="closeEditModal()">✕</button>
         </div>
         <div class="modal-body">
           <form id="editForm">
             <input type="hidden" id="editType">
             <input type="hidden" id="editId">
-            <label id="editNameLabel">Von wem</label><input id="editName" required placeholder="Name">
+            <label id="editNameLabel">Von wem</label>
+            <input id="editName" required placeholder="Name">
             <div class="row">
-              <div><label for="editBetrag">Betrag €</label><input id="editBetrag" type="number" step="0.01" required></div>
-              <div><label for="editDatum">Fällig am</label><input id="editDatum" type="date" required></div>
+              <div>
+                <label for="editBetrag">Betrag €</label>
+                <input id="editBetrag" type="number" step="0.01" required>
+              </div>
+              <div>
+                <label for="editDatum">Fällig am</label>
+                <input id="editDatum" type="date" required>
+              </div>
             </div>
-            <label id="editKategorieLabel" for="editKategorie">Kategorie</label><select id="editKategorie" style="display: none;"><option>Lebensmittel</option><option>Wohnen</option><option>Reisen</option><option>Transport</option><option>Gesundheit</option><option>Schulden</option><option>Sonstiges</option></select>
-            <label for="editStatus">Status</label><select id="editStatus"><option>Offen</option><option>Bezahlt</option><option>Erledigt</option></select>
-            <label for="editNotiz">Notiz</label><textarea id="editNotiz"></textarea>
-            <div class="buttons"><button class="btn btn-dark" type="submit">Speichern</button><button class="btn btn-light" type="button" onclick="closeEditModal()">Abbrechen</button></div>
+            <label id="editKategorieLabel" for="editKategorie">Kategorie</label>
+            <select id="editKategorie" style="display:none;">
+              <option>Lebensmittel</option><option>Wohnen</option><option>Reisen</option>
+              <option>Transport</option><option>Gesundheit</option><option>Schulden</option><option>Sonstiges</option>
+            </select>
+            <label for="editStatus">Status</label>
+            <select id="editStatus"><option>Offen</option><option>Bezahlt</option><option>Erledigt</option></select>
+            <label for="editNotiz">Notiz</label>
+            <textarea id="editNotiz"></textarea>
+            <div class="buttons">
+              <button class="btn btn-dark"  type="submit">Speichern</button>
+              <button class="btn btn-light" type="button" onclick="closeEditModal()">Abbrechen</button>
+            </div>
           </form>
         </div>
       </div>
@@ -201,253 +523,232 @@
       <div class="action-sheet-container">
         <div class="action-sheet-group">
           <div class="action-sheet-title" id="actionSheetTitle">Eintrag</div>
-          <button class="action-sheet-btn" onclick="actionSheetEdit()">✏️ Bearbeiten</button>
-          <button class="action-sheet-btn btn-green" onclick="actionSheetErledigt()">✓ Erledigt markieren</button>
-          <button class="action-sheet-btn btn-red" onclick="actionSheetDelete()">🗑 Löschen</button>
+          <button class="action-sheet-btn"           onclick="actionSheetEdit()">Bearbeiten</button>
+          <button class="action-sheet-btn btn-green" onclick="actionSheetErledigt()">Erledigt markieren</button>
+          <button class="action-sheet-btn btn-red"   onclick="actionSheetDelete()">Löschen</button>
         </div>
         <button class="action-sheet-cancel-btn" onclick="closeActionSheet()">Abbrechen</button>
       </div>
     </div>
 
-    <section id="sicherung" class="page">
-      <h1 class="title">Sicherung</h1>
-      <div class="card panel">
-        <p>Hier kannst du deine Daten exportieren oder importieren.</p>
-        <div class="buttons">
-          <button class="btn btn-dark" onclick="exportData()">Exportieren</button>
-          <button class="btn btn-light" onclick="document.getElementById('importFile').click()">Importieren</button>
-        </div>
-        <input type="file" id="importFile" style="display: none;" accept=".json" onchange="importData(event)">
-      </div>
-    </section>
-  </div>
+  </div><!-- /app -->
+
+  <!-- FAB -->
+  <button class="fab" id="fabBtn" onclick="openQuickAdd()">+ Eintrag</button>
+
+  <!-- Swipe hint -->
+  <div class="swipe-hint" id="swipeHint">← Wischen zum Zurücknavigieren</div>
 
   <script>
     const STORAGE_KEY = 'finanzapp_data';
+    const sortState   = { bekomme: 'datum', zahle: 'datum' };
 
+    // ── Navigation ────────────────────────────────────────────────
     function showPage(pageId) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(pageId).classList.add('active');
+      document.getElementById('fabBtn').style.display = pageId === 'home' ? 'block' : 'none';
       if (pageId === 'uebersicht') updateUebersicht();
-      if (pageId === 'home') updateHome();
+      if (pageId === 'home')       updateHome();
+      maybeShowSwipeHint(pageId);
     }
 
+    // ── Data ──────────────────────────────────────────────────────
     function getData() {
-      const data = localStorage.getItem(STORAGE_KEY);
-      return data ? JSON.parse(data) : { bekomme: [], zahle: [] };
+      const d = localStorage.getItem(STORAGE_KEY);
+      return d ? JSON.parse(d) : { bekomme: [], zahle: [] };
     }
-
     function saveData(data) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
       updateHome();
       updateUebersicht();
       updateDueCache();
     }
-
     function addEntry(type, name, betrag, datum, status, notiz, kategorie = null) {
-      const data = getData();
+      const data  = getData();
       const entry = { id: Date.now(), name, betrag: parseFloat(betrag), datum, status, notiz, kategorie };
-      if (type === 'bekomme') data.bekomme.push(entry);
-      else data.zahle.push(entry);
+      data[type].push(entry);
       saveData(data);
       renderLists();
     }
-
     function deleteEntry(type, id) {
       const data = getData();
-      if (type === 'bekomme') data.bekomme = data.bekomme.filter(e => e.id !== id);
-      else data.zahle = data.zahle.filter(e => e.id !== id);
+      data[type] = data[type].filter(e => e.id !== id);
       saveData(data);
       renderLists();
     }
-
     function markAsErledigt(type, id) {
-      const data = getData();
-      const entries = type === 'bekomme' ? data.bekomme : data.zahle;
-      const entry = entries.find(e => e.id === id);
-      if (entry) {
-        entry.status = 'Erledigt';
-        saveData(data);
-        renderLists();
-        updateUebersicht();
-      }
+      const data  = getData();
+      const entry = data[type].find(e => e.id === id);
+      if (entry) { entry.status = 'Erledigt'; saveData(data); renderLists(); }
+    }
+
+    // ── Sort ──────────────────────────────────────────────────────
+    function setSort(type, key) {
+      sortState[type] = key;
+      document.querySelectorAll(`[id^="sort-${type}-"]`).forEach(b => b.classList.remove('active'));
+      document.getElementById(`sort-${type}-${key}`).classList.add('active');
+      renderLists();
+    }
+    function sortedEntries(entries, key) {
+      return [...entries].sort((a, b) => {
+        if (key === 'datum')  return a.datum.localeCompare(b.datum);
+        if (key === 'betrag') return b.betrag - a.betrag;
+        if (key === 'status') return a.status.localeCompare(b.status);
+        return 0;
+      });
     }
 
     // ── Action Sheet ──────────────────────────────────────────────
-    let _actionType = null;
-    let _actionId   = null;
-
+    let _actionType = null, _actionId = null;
     function openActionSheet(type, id, name) {
-      _actionType = type;
-      _actionId   = id;
+      _actionType = type; _actionId = id;
       document.getElementById('actionSheetTitle').textContent = name;
       document.getElementById('actionSheet').classList.add('active');
     }
+    function closeActionSheet()  { document.getElementById('actionSheet').classList.remove('active'); }
+    function actionSheetEdit()   { closeActionSheet(); openEditModal(_actionType, _actionId); }
+    function actionSheetErledigt(){ closeActionSheet(); markAsErledigt(_actionType, _actionId); }
+    function actionSheetDelete() { closeActionSheet(); deleteEntry(_actionType, _actionId); }
 
-    function closeActionSheet() {
-      document.getElementById('actionSheet').classList.remove('active');
-    }
-
-    function actionSheetEdit() {
-      closeActionSheet();
-      openEditModal(_actionType, _actionId);
-    }
-
-    function actionSheetErledigt() {
-      closeActionSheet();
-      markAsErledigt(_actionType, _actionId);
-    }
-
-    function actionSheetDelete() {
-      closeActionSheet();
-      deleteEntry(_actionType, _actionId);
-    }
-
-    // ── Render Lists (Bekomme / Zahle pages) ─────────────────────
+    // ── Render Lists ──────────────────────────────────────────────
     function renderLists() {
       const data = getData();
 
       function renderList(entries, containerId, type) {
         const container = document.getElementById(containerId);
-        container.innerHTML = entries.length === 0
-          ? '<div style="color: var(--muted); text-align: center; padding: 20px;">Keine Einträge</div>'
-          : '';
-        entries.forEach(e => {
+        const sorted    = sortedEntries(entries, sortState[type]);
+        if (sorted.length === 0) {
+          container.innerHTML = `<div class="empty-state">
+            <div class="empty-state-icon">${type === 'bekomme' ? '↓' : '↑'}</div>
+            <div class="empty-state-text">Noch keine Einträge vorhanden.<br>Füge oben einen neuen Eintrag hinzu.</div>
+          </div>`;
+          return;
+        }
+        container.innerHTML = '';
+        sorted.forEach(e => {
           const item = document.createElement('div');
           item.className = 'entry';
-          const statusClass = e.status === 'Bezahlt' ? 'status-paid'
-                            : e.status === 'Erledigt' ? 'status-erledigt'
-                            : 'status-open';
+          const sc = e.status === 'Bezahlt' ? 'status-paid' : e.status === 'Erledigt' ? 'status-erledigt' : 'status-open';
           item.innerHTML = `
-            <div class="entry-top" onclick="openEditModal('${type}', ${e.id})">
+            <div class="entry-top" onclick="openEditModal('${type}',${e.id})">
               <div><div class="entry-name">${e.name}</div><div class="entry-date">${e.datum}</div></div>
               <div class="entry-amount">${e.betrag.toFixed(2)} €</div>
             </div>
             <div class="entry-bottom">
-              <span class="entry-status ${statusClass}">${e.status}</span>
-              <button class="entry-delete" onclick="event.stopPropagation(); deleteEntry('${type}', ${e.id})">Löschen</button>
-            </div>
-          `;
+              <span class="entry-status ${sc}">${e.status}</span>
+              <button class="entry-delete" onclick="event.stopPropagation();deleteEntry('${type}',${e.id})">Löschen</button>
+            </div>`;
           container.appendChild(item);
         });
       }
 
       renderList(data.bekomme, 'bekommeListe', 'bekomme');
-      renderList(data.zahle, 'zahleListe', 'zahle');
+      renderList(data.zahle,   'zahleListe',   'zahle');
     }
 
-    // ── Home Screen ───────────────────────────────────────────────
+    // ── Home ──────────────────────────────────────────────────────
     function updateHome() {
-      const data = getData();
-      const allEntries = [...data.bekomme, ...data.zahle];
-      const today = new Date().toISOString().split('T')[0];
+      const data    = getData();
+      const all     = [...data.bekomme, ...data.zahle];
+      const today   = new Date().toISOString().split('T')[0];
+      const active  = { b: data.bekomme.filter(e => e.status !== 'Erledigt'), z: data.zahle.filter(e => e.status !== 'Erledigt') };
+      const saldo   = active.b.reduce((s,e) => s + e.betrag, 0) - active.z.reduce((s,e) => s + e.betrag, 0);
 
-      // Erledigt entries excluded from financial metrics
-      const activeBekomme = data.bekomme.filter(e => e.status !== 'Erledigt');
-      const activeZahle   = data.zahle.filter(e => e.status !== 'Erledigt');
+      document.getElementById('saldo').textContent          = saldo.toFixed(2) + ' €';
+      document.getElementById('heuteFaellig').textContent   = all.filter(e => e.datum === today && e.status === 'Offen').length;
+      document.getElementById('monatEinnahmen').textContent = active.b.reduce((s,e) => s + e.betrag, 0).toFixed(2) + ' €';
+      document.getElementById('monatAusgaben').textContent  = active.z.reduce((s,e) => s + e.betrag, 0).toFixed(2) + ' €';
 
-      const saldo          = activeBekomme.reduce((s, e) => s + e.betrag, 0)
-                           - activeZahle.reduce((s, e) => s + e.betrag, 0);
-      const monatEinnahmen = activeBekomme.reduce((s, e) => s + e.betrag, 0);
-      const monatAusgaben  = activeZahle.reduce((s, e) => s + e.betrag, 0);
-      const heuteFaellig   = allEntries.filter(e => e.datum === today && e.status === 'Offen').length;
-
-      document.getElementById('saldo').textContent         = saldo.toFixed(2) + ' €';
-      document.getElementById('heuteFaellig').textContent  = heuteFaellig;
-      document.getElementById('monatEinnahmen').textContent = monatEinnahmen.toFixed(2) + ' €';
-      document.getElementById('monatAusgaben').textContent  = monatAusgaben.toFixed(2) + ' €';
-
-      const todayEntries   = allEntries.filter(e => e.datum === today && e.status === 'Offen');
-      const overdueEntries = allEntries.filter(e => e.datum < today  && e.status === 'Offen');
-
-      function renderQuickList(entries, containerId) {
-        const container = document.getElementById(containerId);
-        container.innerHTML = entries.length === 0
-          ? '<div style="color: var(--muted); text-align: center; padding: 12px;">Keine Einträge</div>'
-          : '';
+      function renderQuickList(entries, id) {
+        const el = document.getElementById(id);
+        if (entries.length === 0) {
+          el.innerHTML = '<div class="empty-state" style="padding:14px 0;"><div class="empty-state-text">Keine Einträge</div></div>';
+          return;
+        }
+        el.innerHTML = '';
         entries.slice(0, 5).forEach(e => {
           const item = document.createElement('div');
           item.className = 'entry';
-          const type = data.bekomme.find(be => be.id === e.id) ? 'bekomme' : 'zahle';
+          const type = data.bekomme.find(b => b.id === e.id) ? 'bekomme' : 'zahle';
           item.onclick = () => openEditModal(type, e.id);
-          item.innerHTML = `<div class="entry-top"><div class="entry-name">${e.name}</div><div class="entry-amount">${e.betrag.toFixed(2)} €</div></div>`;
-          container.appendChild(item);
+          item.innerHTML = `<div class="entry-top"><div><div class="entry-name">${e.name}</div><div class="entry-date">${e.datum}</div></div><div class="entry-amount">${e.betrag.toFixed(2)} €</div></div>`;
+          el.appendChild(item);
         });
       }
 
-      renderQuickList(todayEntries,   'todayList');
-      renderQuickList(overdueEntries, 'overdueList');
+      renderQuickList(all.filter(e => e.datum === today && e.status === 'Offen'), 'todayList');
+      renderQuickList(all.filter(e => e.datum < today   && e.status === 'Offen'), 'overdueList');
     }
 
     // ── Übersicht ─────────────────────────────────────────────────
     function updateUebersicht() {
-      const data = getData();
-      const offeneForderungen = data.bekomme.filter(e => e.status === 'Offen').reduce((s, e) => s + e.betrag, 0);
-      const offeneZahlungen   = data.zahle.filter(e => e.status === 'Offen').reduce((s, e) => s + e.betrag, 0);
-      const today      = new Date().toISOString().split('T')[0];
-      const ueberfaellig    = [...data.bekomme, ...data.zahle].filter(e => e.datum < today && e.status === 'Offen').length;
-      const gesamtEintraege = data.bekomme.length + data.zahle.length;
+      const data  = getData();
+      const today = new Date().toISOString().split('T')[0];
+      const all   = [...data.bekomme, ...data.zahle];
 
-      document.getElementById('offeneForderungen').textContent = offeneForderungen.toFixed(2) + ' €';
-      document.getElementById('offeneZahlungen').textContent   = offeneZahlungen.toFixed(2) + ' €';
-      document.getElementById('anzahlUeberfaellig').textContent = ueberfaellig;
-      document.getElementById('anzahlGesamt').textContent      = gesamtEintraege;
+      document.getElementById('offeneForderungen').textContent = data.bekomme.filter(e => e.status==='Offen').reduce((s,e)=>s+e.betrag,0).toFixed(2)+' €';
+      document.getElementById('offeneZahlungen').textContent   = data.zahle.filter(e => e.status==='Offen').reduce((s,e)=>s+e.betrag,0).toFixed(2)+' €';
+      document.getElementById('anzahlUeberfaellig').textContent = all.filter(e => e.datum < today && e.status==='Offen').length;
+      document.getElementById('anzahlGesamt').textContent      = all.length;
 
-      const detailContainer = document.getElementById('expenseDetails');
-      detailContainer.innerHTML = '';
+      const dc = document.getElementById('expenseDetails');
+      dc.innerHTML = '';
+
+      if (all.length === 0) {
+        dc.innerHTML = '<div class="empty-state"><div class="empty-state-icon">◎</div><div class="empty-state-text">Noch keine Einträge vorhanden.</div></div>';
+        return;
+      }
 
       function buildDetailItem(e, type) {
         const item = document.createElement('div');
         item.className = 'detail-item' + (e.status === 'Erledigt' ? ' item-erledigt' : '');
-        const statusBadge = e.status === 'Bezahlt' ? 'status-paid'
-                          : e.status === 'Erledigt' ? 'status-erledigt'
-                          : 'status-open';
+        const sc = e.status === 'Bezahlt' ? 'status-paid' : e.status === 'Erledigt' ? 'status-erledigt' : 'status-open';
         item.innerHTML = `
           <div class="detail-item-header">
             <span class="detail-item-name">${e.name}</span>
             <div style="display:flex;align-items:center;gap:8px;">
               <span class="detail-item-amount">${e.betrag.toFixed(2)} €</span>
-              <button class="detail-item-delete" onclick="event.stopPropagation(); deleteEntry('${type}', ${e.id}); updateUebersicht();" title="Löschen">✕</button>
+              <button class="detail-item-delete" onclick="event.stopPropagation();deleteEntry('${type}',${e.id});updateUebersicht();" title="Löschen">✕</button>
             </div>
           </div>
-          <div class="detail-item-meta">
-            ${e.datum} • ${e.kategorie ? e.kategorie + ' • ' : ''}
-            <span class="entry-status ${statusBadge}" style="font-size:11px;padding:2px 6px;">${e.status}</span>
-          </div>
-        `;
+          <div class="detail-item-meta">${e.datum}${e.kategorie ? ' · '+e.kategorie : ''} · <span class="entry-status ${sc}" style="font-size:10px;padding:2px 6px;">${e.status}</span></div>`;
         item.addEventListener('click', () => openActionSheet(type, e.id, e.name));
         return item;
       }
 
-      if (data.zahle.length > 0) {
+      function buildSection(entries, type, label, colorClass) {
+        if (entries.length === 0) return;
+        const byMonth = {};
+        entries.forEach(e => { const m = e.datum.slice(0,7); (byMonth[m] = byMonth[m]||[]).push(e); });
+
         const sec = document.createElement('div');
         sec.className = 'detail-section';
-        sec.innerHTML = '<h3>Ausgaben</h3>';
-        const list = document.createElement('div');
-        list.className = 'detail-list';
-        data.zahle.forEach(e => list.appendChild(buildDetailItem(e, 'zahle')));
-        sec.appendChild(list);
-        detailContainer.appendChild(sec);
+        sec.innerHTML = `<h3>${label}</h3>`;
+
+        Object.keys(byMonth).sort().reverse().forEach(month => {
+          const mes    = byMonth[month];
+          const total  = mes.filter(e => e.status !== 'Erledigt').reduce((s,e) => s+e.betrag, 0);
+          const [y, m] = month.split('-');
+          const lbl    = new Date(y, m-1).toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
+          const mg     = document.createElement('div');
+          mg.className = 'month-group';
+          mg.innerHTML = `<div class="month-header"><span class="month-label">${lbl}</span><span class="month-total ${colorClass}">${total.toFixed(2)} €</span></div>`;
+          const list = document.createElement('div');
+          list.className = 'detail-list';
+          mes.forEach(e => list.appendChild(buildDetailItem(e, type)));
+          mg.appendChild(list);
+          sec.appendChild(mg);
+        });
+        dc.appendChild(sec);
       }
 
-      if (data.bekomme.length > 0) {
-        const sec = document.createElement('div');
-        sec.className = 'detail-section';
-        sec.innerHTML = '<h3>Einnahmen</h3>';
-        const list = document.createElement('div');
-        list.className = 'detail-list';
-        data.bekomme.forEach(e => list.appendChild(buildDetailItem(e, 'bekomme')));
-        sec.appendChild(list);
-        detailContainer.appendChild(sec);
-      }
-
-      if (data.zahle.length === 0 && data.bekomme.length === 0) {
-        detailContainer.innerHTML = '<div style="color: var(--muted); text-align: center; padding: 40px 20px;">Keine Einträge vorhanden</div>';
-      }
+      buildSection(data.zahle,   'zahle',   'Ausgaben',  'red');
+      buildSection(data.bekomme, 'bekomme', 'Einnahmen', 'green');
     }
 
     // ── Forms ─────────────────────────────────────────────────────
-    document.getElementById('formBekomme').addEventListener('submit', (e) => {
+    document.getElementById('formBekomme').addEventListener('submit', e => {
       e.preventDefault();
       addEntry('bekomme',
         document.getElementById('bekommeName').value,
@@ -456,10 +757,8 @@
         document.getElementById('bekommeStatus').value,
         document.getElementById('bekommeNotiz').value);
       e.target.reset();
-      showPage('bekomme');
     });
-
-    document.getElementById('formZahle').addEventListener('submit', (e) => {
+    document.getElementById('formZahle').addEventListener('submit', e => {
       e.preventDefault();
       addEntry('zahle',
         document.getElementById('zahleName').value,
@@ -469,16 +768,41 @@
         document.getElementById('zahleNotiz').value,
         document.getElementById('zahleKategorie').value);
       e.target.reset();
-      showPage('zahle');
+    });
+
+    // ── Quick Add ─────────────────────────────────────────────────
+    function openQuickAdd() {
+      document.getElementById('qaDatum').value = new Date().toISOString().split('T')[0];
+      document.getElementById('quickAddModal').classList.add('active');
+    }
+    function closeQuickAdd() {
+      document.getElementById('quickAddModal').classList.remove('active');
+      document.getElementById('quickAddForm').reset();
+    }
+    function setQuickAddType(type) {
+      document.getElementById('qaType').value         = type;
+      document.getElementById('qaNameLabel').textContent = type === 'bekomme' ? 'Von wem' : 'An wen';
+      document.getElementById('qaKategorieWrap').style.display = type === 'zahle' ? 'block' : 'none';
+      document.getElementById('qaTypeBekomme').className = 'btn ' + (type === 'bekomme' ? 'btn-dark' : 'btn-light');
+      document.getElementById('qaTypeZahle').className   = 'btn ' + (type === 'zahle'   ? 'btn-dark' : 'btn-light');
+    }
+    document.getElementById('quickAddForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const type = document.getElementById('qaType').value;
+      addEntry(type,
+        document.getElementById('qaName').value,
+        document.getElementById('qaBetrag').value,
+        document.getElementById('qaDatum').value,
+        'Offen', '',
+        type === 'zahle' ? document.getElementById('qaKategorie').value : null);
+      closeQuickAdd();
     });
 
     // ── Edit Modal ────────────────────────────────────────────────
     function openEditModal(type, entryId) {
-      const data = getData();
-      const entries = type === 'bekomme' ? data.bekomme : data.zahle;
-      const entry   = entries.find(e => e.id === entryId);
+      const data  = getData();
+      const entry = data[type].find(e => e.id === entryId);
       if (!entry) return;
-
       document.getElementById('editType').value   = type;
       document.getElementById('editId').value     = entryId;
       document.getElementById('editName').value   = entry.name;
@@ -486,235 +810,163 @@
       document.getElementById('editDatum').value  = entry.datum;
       document.getElementById('editStatus').value = entry.status;
       document.getElementById('editNotiz').value  = entry.notiz || '';
-
-      const kategorieSelect = document.getElementById('editKategorie');
-      if (type === 'zahle') {
-        kategorieSelect.style.display = 'block';
-        document.getElementById('editKategorieLabel').style.display = 'block';
-        kategorieSelect.value = entry.kategorie || 'Lebensmittel';
-      } else {
-        kategorieSelect.style.display = 'none';
-        document.getElementById('editKategorieLabel').style.display = 'none';
-      }
-
+      const ks = document.getElementById('editKategorie');
+      const kl = document.getElementById('editKategorieLabel');
+      ks.style.display = kl.style.display = type === 'zahle' ? 'block' : 'none';
+      if (type === 'zahle') ks.value = entry.kategorie || 'Lebensmittel';
       document.getElementById('editNameLabel').textContent = type === 'bekomme' ? 'Von wem' : 'An wen';
       document.getElementById('editModal').classList.add('active');
     }
-
-    function closeEditModal() {
-      document.getElementById('editModal').classList.remove('active');
-    }
-
-    document.getElementById('editForm').addEventListener('submit', (e) => {
+    function closeEditModal() { document.getElementById('editModal').classList.remove('active'); }
+    document.getElementById('editForm').addEventListener('submit', e => {
       e.preventDefault();
       const type    = document.getElementById('editType').value;
       const entryId = parseInt(document.getElementById('editId').value);
       const data    = getData();
-      const entries = type === 'bekomme' ? data.bekomme : data.zahle;
-      const entry   = entries.find(e => e.id === entryId);
-
+      const entry   = data[type].find(e => e.id === entryId);
       if (entry) {
         entry.name   = document.getElementById('editName').value;
         entry.betrag = parseFloat(document.getElementById('editBetrag').value);
         entry.datum  = document.getElementById('editDatum').value;
         entry.status = document.getElementById('editStatus').value;
         entry.notiz  = document.getElementById('editNotiz').value;
-        if (type === 'zahle') {
-          entry.kategorie = document.getElementById('editKategorie').value;
-        }
-        saveData(data);
-        closeEditModal();
-        renderLists();
-        if (type === 'bekomme') showPage('bekomme');
-        else showPage('zahle');
+        if (type === 'zahle') entry.kategorie = document.getElementById('editKategorie').value;
+        saveData(data); closeEditModal(); renderLists();
       }
     });
 
     // ── Export / Import ───────────────────────────────────────────
     function exportData() {
-      const data = getData();
-      const json = JSON.stringify(data, null, 2);
-      const blob = new Blob([json], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify(getData(), null, 2)], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
-      a.href     = url;
-      a.download = 'finanzapp_backup.json';
-      a.click();
+      a.href = url; a.download = 'finanzapp_backup.json'; a.click();
       URL.revokeObjectURL(url);
     }
-
     function importData(event) {
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = e => {
         try {
-          const data = JSON.parse(e.target.result);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-          renderLists();
-          updateHome();
-          updateUebersicht();
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(JSON.parse(e.target.result)));
+          renderLists(); updateHome(); updateUebersicht();
           alert('Daten erfolgreich importiert!');
-        } catch (err) {
-          alert('Fehler beim Importieren der Datei');
-        }
+        } catch { alert('Fehler beim Importieren der Datei'); }
       };
       reader.readAsText(file);
     }
 
     // ── Benachrichtigungen ────────────────────────────────────────
     const NOTIF_LAST_KEY = 'finanzapp_last_notif';
-    const NOTIF_INTERVAL = 5 * 60 * 60 * 1000; // 5 Stunden
+    const NOTIF_INTERVAL = 5 * 60 * 60 * 1000;
 
     function updateDueCache() {
       const data  = getData();
       const today = new Date().toISOString().split('T')[0];
       const due   = [...data.bekomme, ...data.zahle].filter(e => e.datum === today && e.status === 'Offen');
       localStorage.setItem('finanzapp_due_today', JSON.stringify(due));
-      if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+      if (navigator.serviceWorker?.controller)
         navigator.serviceWorker.controller.postMessage({ type: 'UPDATE_DUE', entries: due });
-      }
     }
-
     function showDueNotification() {
       if (Notification.permission !== 'granted') return;
-      const due = JSON.parse(localStorage.getItem('finanzapp_due_today') || '[]');
-      if (due.length === 0) return;
+      const due  = JSON.parse(localStorage.getItem('finanzapp_due_today') || '[]');
+      if (!due.length) return;
       const last = parseInt(localStorage.getItem(NOTIF_LAST_KEY) || '0');
       if (Date.now() - last < NOTIF_INTERVAL) return;
       localStorage.setItem(NOTIF_LAST_KEY, Date.now().toString());
       new Notification('Finanzapp – Heute fällig', {
-        body: due.length === 1
-          ? `"${due[0].name}" ist heute fällig (${due[0].betrag.toFixed(2)} €)`
-          : `${due.length} Einträge sind heute fällig`,
-        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%232f9448"/><text x="32" y="46" text-anchor="middle" font-size="36" fill="white">€</text></svg>',
+        body: due.length === 1 ? `"${due[0].name}" ist heute fällig (${due[0].betrag.toFixed(2)} €)` : `${due.length} Einträge sind heute fällig`,
+        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%232C4A3E"/><text x="32" y="46" text-anchor="middle" font-size="36" fill="white">€</text></svg>',
         tag: 'finanzapp-due'
       });
     }
-
     function initNotifications() {
       if (!('Notification' in window)) return;
-      // Banner anzeigen wenn Berechtigung noch nicht erteilt/verweigert
-      if (Notification.permission === 'default') {
-        document.getElementById('notifBanner').style.display = 'block';
-      }
-      if (Notification.permission === 'granted') {
-        startNotifCycle();
-      }
+      if (Notification.permission === 'default') document.getElementById('notifBanner').style.display = 'block';
+      if (Notification.permission === 'granted') startNotifCycle();
     }
-
     async function requestNotifPermission() {
       if (!('Notification' in window)) return;
       const perm = await Notification.requestPermission();
       document.getElementById('notifBanner').style.display = 'none';
       if (perm === 'granted') {
         const el = document.getElementById('notifStatus');
-        el.textContent = '🔔 Benachrichtigungen aktiviert';
-        el.style.display = 'block';
+        el.textContent = 'Benachrichtigungen aktiviert'; el.style.display = 'block';
         setTimeout(() => { el.style.display = 'none'; }, 4000);
-        startNotifCycle();
-        registerSW();
+        startNotifCycle(); registerSW();
       }
     }
-
     function startNotifCycle() {
       updateDueCache();
-      // Sofort prüfen beim Start (ohne Intervall-Sperre)
       const last = parseInt(localStorage.getItem(NOTIF_LAST_KEY) || '0');
       if (Date.now() - last >= NOTIF_INTERVAL) showDueNotification();
-      // Alle 5 Stunden wiederholen
-      setInterval(() => {
-        updateDueCache();
-        showDueNotification();
-      }, NOTIF_INTERVAL);
+      setInterval(() => { updateDueCache(); showDueNotification(); }, NOTIF_INTERVAL);
     }
-
-    // ── Service Worker (Hintergrund-Benachrichtigungen) ───────────
     async function registerSW() {
       if (!('serviceWorker' in navigator)) return;
       const swCode = `
-const DUE_CACHE = 'finanzapp-due-v1';
-self.addEventListener('install', () => self.skipWaiting());
-self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
-self.addEventListener('message', async (event) => {
-  if (event.data && event.data.type === 'UPDATE_DUE') {
-    const cache = await caches.open(DUE_CACHE);
-    await cache.put('due', new Response(JSON.stringify(event.data.entries)));
-  }
+const DUE_CACHE='finanzapp-due-v1';
+self.addEventListener('install',()=>self.skipWaiting());
+self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
+self.addEventListener('message',async event=>{
+  if(event.data?.type==='UPDATE_DUE'){const c=await caches.open(DUE_CACHE);await c.put('due',new Response(JSON.stringify(event.data.entries)));}
 });
-self.addEventListener('periodicsync', async (event) => {
-  if (event.tag === 'finanzapp-check-due') {
-    event.waitUntil(notifyDue());
-  }
+self.addEventListener('periodicsync',async event=>{
+  if(event.tag==='finanzapp-check-due')event.waitUntil(notifyDue());
 });
-async function notifyDue() {
-  const cache = await caches.open(DUE_CACHE);
-  const resp  = await cache.match('due');
-  if (!resp) return;
-  const due = await resp.json();
-  if (due.length === 0) return;
-  await self.registration.showNotification('Finanzapp – Heute fällig', {
-    body: due.length === 1
-      ? due[0].name + ' ist heute fällig (' + due[0].betrag.toFixed(2) + ' €)'
-      : due.length + ' Einträge sind heute fällig',
-    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%232f9448"/><text x="32" y="46" text-anchor="middle" font-size="36" fill="white">€</text></svg>',
-    tag: 'finanzapp-due',
-    renotify: true
+async function notifyDue(){
+  const c=await caches.open(DUE_CACHE);const r=await c.match('due');if(!r)return;
+  const due=await r.json();if(!due.length)return;
+  await self.registration.showNotification('Finanzapp – Heute fällig',{
+    body:due.length===1?due[0].name+' ist heute fällig ('+due[0].betrag.toFixed(2)+' €)':due.length+' Einträge sind heute fällig',
+    icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%232C4A3E"/><text x="32" y="46" text-anchor="middle" font-size="36" fill="white">€</text></svg>',
+    tag:'finanzapp-due',renotify:true
   });
-}
-`;
+}`;
       try {
-        const blob = new Blob([swCode], { type: 'application/javascript' });
-        const swUrl = URL.createObjectURL(blob);
-        const reg = await navigator.serviceWorker.register(swUrl, { scope: '/' });
+        const reg = await navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode],{type:'application/javascript'})),{scope:'/'});
         if ('periodicSync' in reg) {
-          const status = await navigator.permissions.query({ name: 'periodic-background-sync' });
-          if (status.state === 'granted') {
-            await reg.periodicSync.register('finanzapp-check-due', {
-              minInterval: NOTIF_INTERVAL
-            });
-          }
+          const s = await navigator.permissions.query({name:'periodic-background-sync'});
+          if (s.state === 'granted') await reg.periodicSync.register('finanzapp-check-due',{minInterval:NOTIF_INTERVAL});
         }
-      } catch (e) {
-        // SW nicht verfügbar (z. B. lokale Datei) – kein Problem, App-seitige
-        // Benachrichtigungen über setInterval bleiben aktiv
-      }
+      } catch(e) {}
     }
-
-    // ── Sichtbarkeit: beim Tab-Wechsel prüfen ─────────────────────
     document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {
-        updateDueCache();
-        showDueNotification();
-      }
+      if (document.visibilityState === 'visible') { updateDueCache(); showDueNotification(); }
     });
 
-    // ── Swipe-Navigation (rechts → zurück zu Home) ────────────────
+    // ── Swipe-Navigation ──────────────────────────────────────────
     (function () {
-      let startX = 0, startY = 0;
-      document.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-      }, { passive: true });
-      document.addEventListener('touchend', (e) => {
-        const dx = e.changedTouches[0].clientX - startX;
-        const dy = e.changedTouches[0].clientY - startY;
-        const activePage = document.querySelector('.page.active');
-        if (!activePage || activePage.id === 'home') return;
-        if (dx > 70 && Math.abs(dy) < Math.abs(dx) * 0.6) {
-          showPage('home');
-        }
+      let sx = 0, sy = 0;
+      document.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+      document.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - sx;
+        const dy = e.changedTouches[0].clientY - sy;
+        const active = document.querySelector('.page.active');
+        if (!active || active.id === 'home') return;
+        if (dx > 70 && Math.abs(dy) < Math.abs(dx) * 0.6) showPage('home');
       }, { passive: true });
     })();
+
+    // ── Swipe Hint (einmalig) ─────────────────────────────────────
+    let _hintShown = !!localStorage.getItem('finanzapp_swipe_hint');
+    function maybeShowSwipeHint(pageId) {
+      if (_hintShown || pageId === 'home') return;
+      _hintShown = true;
+      localStorage.setItem('finanzapp_swipe_hint', '1');
+      const hint = document.getElementById('swipeHint');
+      setTimeout(() => hint.classList.add('show'), 500);
+      setTimeout(() => hint.classList.remove('show'), 3200);
+    }
 
     // ── Init ──────────────────────────────────────────────────────
     renderLists();
     updateHome();
+    document.getElementById('fabBtn').style.display = 'block';
     initNotifications();
-    // SW nur registrieren wenn Berechtigung bereits vorhanden
-    if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-      registerSW();
-    }
+    if (typeof Notification !== 'undefined' && Notification.permission === 'granted') registerSW();
   </script>
 </body>
 </html>
