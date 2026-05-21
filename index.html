@@ -24,7 +24,6 @@
     .red { color: var(--red); }
     .panel { padding: 14px; margin-top: 10px; }
     .panel h2 { font-size: 17px; font-weight: 700; margin: 0 0 12px; }
-    .back { background: none; border: none; padding: 0; margin: 0 0 12px; font-size: 14px; font-weight: 600; cursor: pointer; color: var(--text); font-family: inherit; }
     form { padding: 14px; width: 100%; }
     label { display: block; margin: 10px 0 4px; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; }
     input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius); font-size: 15px; background: #fff; display: block; box-sizing: border-box; font-family: inherit; }
@@ -129,7 +128,6 @@
     </section>
 
     <section id="bekomme" class="page">
-      <button class="back" type="button" onclick="showPage('home')">← Zurück</button>
       <h1 class="title">Ich bekomme</h1>
       <form id="formBekomme">
         <label for="bekommeName">Von wem</label><input id="bekommeName" required placeholder="Name">
@@ -145,7 +143,6 @@
     </section>
 
     <section id="zahle" class="page">
-      <button class="back" type="button" onclick="showPage('home')">← Zurück</button>
       <h1 class="title">Ich zahle</h1>
       <form id="formZahle">
         <label for="zahleName">An wen</label><input id="zahleName" required placeholder="Name">
@@ -162,7 +159,6 @@
     </section>
 
     <section id="uebersicht" class="page">
-      <button class="back" type="button" onclick="showPage('home')">← Zurück</button>
       <h1 class="title">Übersicht</h1>
       <div class="grid">
         <div class="card metric"><div class="metric-label">Offene Forderungen</div><div id="offeneForderungen" class="metric-value green">0,00 €</div></div>
@@ -214,7 +210,6 @@
     </div>
 
     <section id="sicherung" class="page">
-      <button class="back" type="button" onclick="showPage('home')">← Zurück</button>
       <h1 class="title">Sicherung</h1>
       <div class="card panel">
         <p>Hier kannst du deine Daten exportieren oder importieren.</p>
@@ -693,6 +688,24 @@ async function notifyDue() {
         showDueNotification();
       }
     });
+
+    // ── Swipe-Navigation (rechts → zurück zu Home) ────────────────
+    (function () {
+      let startX = 0, startY = 0;
+      document.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      }, { passive: true });
+      document.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - startX;
+        const dy = e.changedTouches[0].clientY - startY;
+        const activePage = document.querySelector('.page.active');
+        if (!activePage || activePage.id === 'home') return;
+        if (dx > 70 && Math.abs(dy) < Math.abs(dx) * 0.6) {
+          showPage('home');
+        }
+      }, { passive: true });
+    })();
 
     // ── Init ──────────────────────────────────────────────────────
     renderLists();
