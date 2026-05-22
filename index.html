@@ -6,339 +6,570 @@
   <title>Finanzapp</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:     #F5F3EE;
-      --card:   #FFFFFF;
-      --line:   #E4E1DA;
-      --text:   #1A1A1A;
-      --muted:  #8A8780;
-      --accent: #2C4A3E;
-      --green:  #2D7A50;
-      --red:    #B83A2A;
-      --radius: 10px;
+      --bg:      #0D0D0B;
+      --surface: #171614;
+      --raised:  #1F1E1B;
+      --line:    #282622;
+      --text:    #E8E4DA;
+      --muted:   #5E5B55;
+      --subtle:  #3A3733;
+      --gold:    #C8A96A;
+      --gold-dim:#7A6640;
+      --green:   #5FAF82;
+      --red:     #C86458;
+      --radius:  8px;
     }
+
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      font-size: 15px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 400;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
     }
-    .app { max-width: 430px; margin: 0 auto; padding: 24px 16px 100px; }
 
-    /* Pages */
+    .app {
+      max-width: 430px;
+      margin: 0 auto;
+      padding: 32px 18px 110px;
+    }
+
+    /* ── Pages ── */
     .page { display: none; }
     .page.active { display: block; }
 
-    /* Typography */
-    .title {
+    /* ── Typography ── */
+    .page-title {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 40px;
-      font-weight: 500;
+      font-size: 42px;
+      font-weight: 300;
       letter-spacing: -0.5px;
-      line-height: 1.1;
-      margin-bottom: 22px;
+      line-height: 1.05;
+      color: var(--text);
+      margin-bottom: 28px;
     }
-    .section-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.9px;
+    .eyebrow {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 1.4px;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 10px;
     }
 
-    /* Grid */
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-    /* Cards */
-    .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
-
-    /* Nav Buttons */
-    .navbtn {
-      background: var(--card);
+    /* ── Hero Balance ── */
+    .hero {
+      background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      width: 100%; padding: 16px;
-      text-align: left; cursor: pointer;
-      min-height: 90px;
+      padding: 28px 24px 24px;
+      margin-bottom: 10px;
     }
-    .navbtn:active { background: var(--bg); }
-    .navtitle {
+    .hero-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .hero-amount {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 20px; font-weight: 500;
-      margin-bottom: 5px; color: var(--text);
+      font-size: 56px;
+      font-weight: 300;
+      letter-spacing: -1px;
+      line-height: 1;
+      color: var(--gold);
     }
-    .navsub { color: var(--muted); font-size: 12px; line-height: 1.4; }
+    .hero-amount.negative { color: var(--red); }
 
-    /* Metrics */
-    .metric { padding: 14px 16px; min-height: 78px; }
-    .metric-label {
-      font-size: 10px; font-weight: 600;
-      letter-spacing: 0.8px; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 9px;
+    /* ── Metric Row ── */
+    .metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 28px;
     }
-    .metric-value { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+    .metric {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px 12px;
+    }
+    .metric-label {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .metric-value {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+    }
+    .gold  { color: var(--gold); }
     .green { color: var(--green); }
     .red   { color: var(--red); }
 
-    /* Panel */
-    .panel { padding: 18px; margin-top: 12px; }
-    .panel h2 {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 22px; font-weight: 500; margin-bottom: 14px;
+    /* ── Nav Grid ── */
+    .nav-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 32px;
     }
-
-    /* Forms */
-    form {
-      background: var(--card);
+    .navbtn {
+      background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: 18px; width: 100%;
+      padding: 18px 16px;
+      text-align: left;
+      cursor: pointer;
+      min-height: 86px;
+      position: relative;
+    }
+    .navbtn:active { background: var(--raised); }
+    .navtitle {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 19px;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 5px;
+      line-height: 1.1;
+    }
+    .navsub {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.4;
+      font-weight: 400;
+    }
+
+    /* ── Section divider ── */
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .section-head .eyebrow { flex-shrink: 0; }
+    .section-head::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    /* ── List ── */
+    .list { display: flex; flex-direction: column; gap: 5px; margin-bottom: 28px; }
+
+    .entry {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      cursor: pointer;
+    }
+    .entry:active { background: var(--raised); }
+    .entry-top    { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+    .entry-name   { font-weight: 500; font-size: 14px; }
+    .entry-date   { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .entry-amount { font-weight: 600; font-size: 14px; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+    .entry-bottom { display: flex; justify-content: space-between; align-items: center; }
+
+    .badge {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+    .badge-open     { background: rgba(200,100,88,0.15); color: var(--red); }
+    .badge-paid     { background: rgba(95,175,130,0.15); color: var(--green); }
+    .badge-erledigt { background: var(--raised);         color: var(--muted); }
+
+    .entry-delete {
+      background: none; border: none;
+      color: var(--muted); font-size: 11px;
+      cursor: pointer; font-family: inherit; font-weight: 500;
+    }
+    .entry-delete:hover { color: var(--red); }
+
+    /* ── Empty state ── */
+    .empty {
+      text-align: center;
+      padding: 36px 20px;
+      color: var(--muted);
+    }
+    .empty-icon { font-size: 24px; margin-bottom: 10px; opacity: 0.5; }
+    .empty-text { font-size: 13px; line-height: 1.6; }
+
+    /* ── Sort bar ── */
+    .sort-bar { display: flex; gap: 4px; margin: 18px 0 12px; }
+    .sort-btn {
+      padding: 4px 12px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: transparent;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--muted);
+      font-family: inherit;
+      letter-spacing: 0.2px;
+    }
+    .sort-btn.active {
+      border-color: var(--gold-dim);
+      color: var(--gold);
+      background: rgba(200,169,106,0.08);
+    }
+
+    /* ── Forms ── */
+    form {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
     }
     label {
       display: block;
-      margin: 13px 0 5px;
-      font-size: 10px; font-weight: 600;
-      letter-spacing: 0.7px; text-transform: uppercase;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
       color: var(--muted);
+      margin: 16px 0 6px;
     }
+    label:first-of-type { margin-top: 0; }
     input, select, textarea {
-      width: 100%; padding: 11px 13px;
-      border: 1px solid var(--line); border-radius: 6px;
-      font-size: 15px; font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg); color: var(--text);
-      display: block; -webkit-appearance: none; appearance: none;
+      width: 100%;
+      padding: 11px 13px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      font-size: 14px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 400;
+      color: var(--text);
+      -webkit-appearance: none;
+      appearance: none;
     }
+    input::placeholder, textarea::placeholder { color: var(--muted); }
     input:focus, select:focus, textarea:focus {
-      outline: none; border-color: var(--accent); background: #fff;
+      outline: none;
+      border-color: var(--gold-dim);
+      background: var(--raised);
     }
     textarea { min-height: 72px; resize: vertical; }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .row > div { display: flex; flex-direction: column; }
 
-    /* Buttons */
-    .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+    /* ── Buttons ── */
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 18px; }
     .btn {
-      width: 100%; border: 1px solid var(--line); border-radius: 6px;
-      padding: 12px; font-size: 14px; font-weight: 600;
-      cursor: pointer; font-family: 'Inter', system-ui, sans-serif;
-    }
-    .btn-dark  { background: var(--accent); color: #fff; border-color: var(--accent); }
-    .btn-dark:active  { opacity: 0.85; }
-    .btn-light { background: var(--card); color: var(--text); }
-    .btn-light:active { background: var(--bg); }
-
-    /* Sort bar */
-    .sort-bar { display: flex; gap: 6px; margin: 16px 0 10px; flex-wrap: wrap; }
-    .sort-btn {
-      padding: 5px 13px;
-      border: 1px solid var(--line); border-radius: 20px;
-      background: var(--card); font-size: 12px; font-weight: 500;
-      cursor: pointer; color: var(--muted); font-family: inherit;
-    }
-    .sort-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-    /* Lists */
-    .list { display: flex; flex-direction: column; gap: 6px; }
-    .entry {
-      background: var(--card); border: 1px solid var(--line);
-      border-radius: var(--radius); padding: 13px 14px; cursor: pointer;
-    }
-    .entry-top { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 7px; align-items: flex-start; }
-    .entry-name  { font-weight: 600; font-size: 14px; }
-    .entry-amount { font-weight: 700; font-size: 14px; flex-shrink: 0; }
-    .entry-date  { color: var(--muted); font-size: 12px; margin-top: 2px; }
-    .entry-bottom { display: flex; justify-content: space-between; align-items: center; }
-    .entry-status {
-      font-size: 10px; padding: 3px 8px; border-radius: 4px;
-      font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase;
-    }
-    .status-open    { background: #FCEAE7; color: var(--red); }
-    .status-paid    { background: #E4F2EB; color: var(--green); }
-    .status-erledigt { background: #EDECEB; color: #999; }
-    .entry-delete {
-      background: none; border: none; color: var(--muted);
-      cursor: pointer; font-size: 12px; font-family: inherit;
-    }
-
-    /* Empty state */
-    .empty-state { text-align: center; padding: 30px 16px; color: var(--muted); }
-    .empty-state-icon { font-size: 26px; margin-bottom: 8px; }
-    .empty-state-text { font-size: 13px; line-height: 1.6; }
-
-    /* Detail items (Übersicht) */
-    .detail-section { margin-top: 16px; }
-    .detail-section h3 {
-      font-size: 10px; font-weight: 600; text-transform: uppercase;
-      letter-spacing: 0.8px; color: var(--muted); margin-bottom: 8px;
-    }
-    .detail-list { display: flex; flex-direction: column; gap: 4px; }
-    .month-group  { margin-bottom: 14px; }
-    .month-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .month-label  { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); }
-    .month-total  { font-size: 12px; font-weight: 700; }
-    .detail-item {
-      padding: 10px 12px; background: var(--bg);
-      border: 1px solid var(--line); border-radius: 6px; cursor: pointer;
-    }
-    .detail-item:hover { background: #EBE8E2; }
-    .detail-item.item-erledigt { opacity: 0.4; }
-    .detail-item.item-erledigt .detail-item-name,
-    .detail-item.item-erledigt .detail-item-amount { text-decoration: line-through; }
-    .detail-item-header { display: flex; justify-content: space-between; margin-bottom: 3px; align-items: center; }
-    .detail-item-name   { font-weight: 600; font-size: 13px; }
-    .detail-item-amount { font-weight: 700; font-size: 13px; }
-    .detail-item-meta   { color: var(--muted); font-size: 12px; }
-    .detail-item-delete {
-      background: none; border: none; color: var(--muted);
-      font-size: 14px; cursor: pointer; padding: 2px 4px; line-height: 1; flex-shrink: 0;
-    }
-
-    /* FAB */
-    .fab {
-      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
-      background: var(--accent); color: #fff; border: none;
-      border-radius: 28px; padding: 15px 32px;
-      font-size: 15px; font-weight: 600; cursor: pointer;
+      width: 100%;
+      border-radius: 5px;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
       font-family: 'Inter', system-ui, sans-serif;
-      letter-spacing: 0.2px; z-index: 100; display: none;
-      box-shadow: 0 4px 16px rgba(44,74,62,0.28);
+      letter-spacing: 0.2px;
+      border: 1px solid transparent;
+    }
+    .btn-primary {
+      background: var(--gold);
+      color: var(--bg);
+      border-color: var(--gold);
+    }
+    .btn-primary:active { opacity: 0.85; }
+    .btn-secondary {
+      background: transparent;
+      color: var(--muted);
+      border-color: var(--line);
+    }
+    .btn-secondary:active { background: var(--raised); }
+
+    /* ── Panel (Übersicht, Sicherung) ── */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-top: 10px;
+    }
+    .panel-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 20px;
+      font-weight: 400;
+      margin-bottom: 14px;
+      color: var(--text);
+    }
+
+    /* ── Detail items ── */
+    .detail-section { margin-bottom: 22px; }
+    .detail-section-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .month-group { margin-bottom: 16px; }
+    .month-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--line);
+    }
+    .month-name  { font-size: 11px; font-weight: 500; color: var(--muted); letter-spacing: 0.3px; }
+    .month-total { font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .detail-list { display: flex; flex-direction: column; gap: 3px; }
+    .detail-item {
+      padding: 10px 12px;
+      background: var(--raised);
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .detail-item:hover { background: var(--subtle); }
+    .detail-item.item-erledigt { opacity: 0.35; }
+    .detail-item.item-erledigt .di-name,
+    .detail-item.item-erledigt .di-amount { text-decoration: line-through; }
+    .di-row    { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 3px; }
+    .di-name   { font-weight: 500; font-size: 13px; }
+    .di-amount { font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+    .di-meta   { font-size: 11px; color: var(--muted); }
+    .di-del    { background: none; border: none; color: var(--muted); font-size: 13px; cursor: pointer; padding: 2px 4px; line-height: 1; flex-shrink: 0; }
+    .di-del:hover { color: var(--red); }
+
+    /* ── FAB ── */
+    .fab {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gold);
+      color: var(--bg);
+      border: none;
+      border-radius: 28px;
+      padding: 14px 34px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Inter', system-ui, sans-serif;
+      cursor: pointer;
+      z-index: 100;
+      display: none;
+      letter-spacing: 0.3px;
+      box-shadow: 0 8px 24px rgba(200,169,106,0.2);
     }
     .fab:active { opacity: 0.88; }
 
-    /* Modal */
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.32); z-index: 1000; align-items: center; justify-content: center; }
+    /* ── Modal ── */
+    .modal {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
     .modal.active { display: flex; }
-    .modal-content {
-      background: var(--card); border: 1px solid var(--line);
-      border-radius: var(--radius); width: 92%; max-width: 430px;
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      width: 92%; max-width: 430px;
       max-height: 90vh; overflow-y: auto;
     }
-    .modal-header {
-      padding: 16px 18px; border-bottom: 1px solid var(--line);
+    .modal-head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
       display: flex; justify-content: space-between; align-items: center;
     }
-    .modal-header h2 {
+    .modal-head h2 {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 22px; font-weight: 500;
+      font-size: 22px; font-weight: 400;
     }
     .modal-close {
-      background: none; border: none; font-size: 20px;
-      cursor: pointer; color: var(--muted); font-family: inherit;
+      background: none; border: none; font-size: 18px;
+      cursor: pointer; color: var(--muted); font-family: inherit; line-height: 1;
     }
-    .modal-body { padding: 16px 18px; }
+    .modal-body { padding: 18px 20px; }
 
-    /* Action Sheet */
+    /* ── Type switcher inside modal ── */
+    .type-switcher {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 16px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 4px;
+    }
+    .type-btn {
+      padding: 9px;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      color: var(--muted);
+    }
+    .type-btn.active {
+      background: var(--raised);
+      color: var(--text);
+    }
+
+    /* ── Action Sheet ── */
     .action-sheet { display: none; position: fixed; inset: 0; z-index: 2000; }
     .action-sheet.active { display: block; }
-    .action-sheet-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.28); }
-    .action-sheet-container { position: absolute; bottom: 0; left: 0; right: 0; padding: 0 12px 28px; max-width: 430px; margin: 0 auto; }
-    .action-sheet-group {
-      background: var(--card); border: 1px solid var(--line);
-      border-radius: var(--radius); overflow: hidden; margin-bottom: 8px;
+    .as-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.55); }
+    .as-container {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 0 12px 28px; max-width: 430px; margin: 0 auto;
     }
-    .action-sheet-title {
+    .as-group {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden; margin-bottom: 8px;
+    }
+    .as-title {
       padding: 12px 16px; text-align: center;
-      color: var(--muted); font-size: 11px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.5px;
-      border-bottom: 1px solid var(--line);
+      color: var(--muted); font-size: 11px; font-weight: 500;
+      letter-spacing: 0.3px; border-bottom: 1px solid var(--line);
     }
-    .action-sheet-btn {
-      width: 100%; padding: 15px; border: none; background: transparent;
-      font-size: 15px; cursor: pointer; text-align: center;
-      border-bottom: 1px solid var(--line); font-family: inherit;
-    }
-    .action-sheet-btn:last-child { border-bottom: none; }
-    .action-sheet-btn:active { background: var(--bg); }
-    .action-sheet-btn.btn-green { color: var(--green); font-weight: 600; }
-    .action-sheet-btn.btn-red   { color: var(--red); }
-    .action-sheet-cancel-btn {
-      width: 100%; padding: 15px; border: 1px solid var(--line);
-      background: var(--card); border-radius: var(--radius);
-      font-size: 15px; font-weight: 700; cursor: pointer;
+    .as-btn {
+      width: 100%; padding: 16px;
+      border: none; background: transparent;
+      font-size: 15px; cursor: pointer;
       text-align: center; font-family: inherit;
+      border-bottom: 1px solid var(--line);
+      color: var(--text);
     }
-    .action-sheet-cancel-btn:active { background: var(--bg); }
+    .as-btn:last-child { border-bottom: none; }
+    .as-btn:active { background: var(--raised); }
+    .as-btn-green { color: var(--green); font-weight: 500; }
+    .as-btn-red   { color: var(--red); }
+    .as-cancel {
+      width: 100%; padding: 16px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      font-size: 15px; font-weight: 500;
+      cursor: pointer; text-align: center; font-family: inherit;
+      color: var(--text);
+    }
+    .as-cancel:active { background: var(--raised); }
 
-    /* Swipe hint */
+    /* ── Swipe hint ── */
     .swipe-hint {
-      position: fixed; bottom: 86px; left: 50%; transform: translateX(-50%);
-      background: rgba(26,26,26,0.75); color: #fff;
-      padding: 9px 20px; border-radius: 20px; font-size: 13px;
+      position: fixed; bottom: 88px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(232,228,218,0.12);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      color: var(--text); padding: 9px 20px;
+      border-radius: 20px; font-size: 12px;
       z-index: 500; pointer-events: none;
       opacity: 0; transition: opacity 0.4s;
-      white-space: nowrap;
+      white-space: nowrap; letter-spacing: 0.2px;
     }
     .swipe-hint.show { opacity: 1; }
 
-    /* Notification */
-    #notifStatus { font-size: 12px; color: var(--muted); text-align: center; margin-top: 8px; display: none; }
+    /* ── Notification ── */
+    #notifStatus { font-size: 11px; color: var(--muted); text-align: center; margin-top: 8px; display: none; }
     #notifBanner {
-      display: none; background: var(--card); border: 1px solid var(--line);
-      border-radius: var(--radius); padding: 14px 16px; margin-top: 14px;
+      display: none;
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 16px; margin-top: 14px;
     }
-    #notifBanner p { font-size: 13px; color: var(--muted); line-height: 1.55; margin-bottom: 12px; }
+    #notifBanner p { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
     #notifBannerBtn {
-      width: 100%; padding: 11px; background: var(--accent); color: #fff;
-      border: none; border-radius: 6px; font-size: 14px; font-weight: 600;
+      width: 100%; padding: 11px;
+      background: var(--gold); color: var(--bg);
+      border: none; border-radius: 5px;
+      font-size: 13px; font-weight: 600;
       cursor: pointer; font-family: inherit;
     }
-    #notifBannerBtn:active { opacity: 0.85; }
   </style>
 </head>
 <body>
   <div class="app">
 
-    <!-- Home -->
+    <!-- ── Home ── -->
     <section id="home" class="page active">
-      <h1 class="title">Finanzapp</h1>
-      <div class="grid">
+      <h1 class="page-title">Finanzapp</h1>
+
+      <div class="hero">
+        <div class="hero-label">Gesamtsaldo</div>
+        <div class="hero-amount" id="saldo">0,00 €</div>
+      </div>
+
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-label">Heute fällig</div>
+          <div class="metric-value" id="heuteFaellig">0</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Einnahmen</div>
+          <div class="metric-value green" id="monatEinnahmen">0,00 €</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Ausgaben</div>
+          <div class="metric-value red" id="monatAusgaben">0,00 €</div>
+        </div>
+      </div>
+
+      <div class="nav-grid">
         <button class="navbtn" onclick="showPage('bekomme')">
           <div class="navtitle">Ich bekomme</div>
-          <div class="navsub">Offene Forderungen verwalten</div>
+          <div class="navsub">Offene Forderungen</div>
         </button>
         <button class="navbtn" onclick="showPage('zahle')">
           <div class="navtitle">Ich zahle</div>
-          <div class="navsub">Eigene Zahlungen im Blick</div>
+          <div class="navsub">Eigene Zahlungen</div>
         </button>
         <button class="navbtn" onclick="showPage('uebersicht')">
           <div class="navtitle">Übersicht</div>
-          <div class="navsub">Automatische Auswertung</div>
+          <div class="navsub">Auswertung</div>
         </button>
         <button class="navbtn" onclick="showPage('sicherung')">
           <div class="navtitle">Sicherung</div>
-          <div class="navsub">Export und Wiederherstellung</div>
+          <div class="navsub">Export &amp; Import</div>
         </button>
       </div>
-      <div class="grid" style="margin-top: 12px;">
-        <div class="card metric"><div class="metric-label">Saldo</div><div id="saldo" class="metric-value">0,00 €</div></div>
-        <div class="card metric"><div class="metric-label">Heute fällig</div><div id="heuteFaellig" class="metric-value">0</div></div>
-        <div class="card metric"><div class="metric-label">Einnahmen</div><div id="monatEinnahmen" class="metric-value green">0,00 €</div></div>
-        <div class="card metric"><div class="metric-label">Ausgaben</div><div id="monatAusgaben" class="metric-value red">0,00 €</div></div>
-      </div>
+
       <div id="notifStatus"></div>
       <div id="notifBanner">
         <p>Aktiviere Benachrichtigungen, um täglich an fällige Einträge erinnert zu werden.</p>
         <button id="notifBannerBtn" onclick="requestNotifPermission()">Benachrichtigungen aktivieren</button>
       </div>
-      <div style="margin-top: 24px;">
-        <div class="section-label">Heute fällig</div>
-        <div class="list" id="todayList"></div>
-      </div>
-      <div style="margin-top: 22px;">
-        <div class="section-label">Überfällig</div>
-        <div class="list" id="overdueList"></div>
-      </div>
+
+      <div class="section-head" style="margin-top:8px;"><span class="eyebrow">Heute fällig</span></div>
+      <div class="list" id="todayList"></div>
+
+      <div class="section-head"><span class="eyebrow">Überfällig</span></div>
+      <div class="list" id="overdueList"></div>
     </section>
 
-    <!-- Ich bekomme -->
+    <!-- ── Ich bekomme ── -->
     <section id="bekomme" class="page">
-      <h1 class="title">Ich bekomme</h1>
+      <h1 class="page-title">Ich bekomme</h1>
       <form id="formBekomme">
         <label for="bekommeName">Von wem</label>
         <input id="bekommeName" required placeholder="Name">
@@ -356,9 +587,9 @@
         <select id="bekommeStatus"><option>Offen</option><option>Bezahlt</option><option>Erledigt</option></select>
         <label for="bekommeNotiz">Notiz</label>
         <textarea id="bekommeNotiz" placeholder="Optional …"></textarea>
-        <div class="buttons">
-          <button class="btn btn-dark" type="submit">Speichern</button>
-          <button class="btn btn-light" type="reset">Leeren</button>
+        <div class="btn-row">
+          <button class="btn btn-primary"   type="submit">Speichern</button>
+          <button class="btn btn-secondary" type="reset">Leeren</button>
         </div>
       </form>
       <div class="sort-bar">
@@ -369,9 +600,9 @@
       <div class="list" id="bekommeListe"></div>
     </section>
 
-    <!-- Ich zahle -->
+    <!-- ── Ich zahle ── -->
     <section id="zahle" class="page">
-      <h1 class="title">Ich zahle</h1>
+      <h1 class="page-title">Ich zahle</h1>
       <form id="formZahle">
         <label for="zahleName">An wen</label>
         <input id="zahleName" required placeholder="Name">
@@ -394,9 +625,9 @@
         <select id="zahleStatus"><option>Offen</option><option>Bezahlt</option><option>Erledigt</option></select>
         <label for="zahleNotiz">Notiz</label>
         <textarea id="zahleNotiz" placeholder="Optional …"></textarea>
-        <div class="buttons">
-          <button class="btn btn-dark" type="submit">Speichern</button>
-          <button class="btn btn-light" type="reset">Leeren</button>
+        <div class="btn-row">
+          <button class="btn btn-primary"   type="submit">Speichern</button>
+          <button class="btn btn-secondary" type="reset">Leeren</button>
         </div>
       </form>
       <div class="sort-bar">
@@ -407,58 +638,52 @@
       <div class="list" id="zahleListe"></div>
     </section>
 
-    <!-- Übersicht -->
+    <!-- ── Übersicht ── -->
     <section id="uebersicht" class="page">
-      <h1 class="title">Übersicht</h1>
-      <div class="grid">
-        <div class="card metric"><div class="metric-label">Offene Forderungen</div><div id="offeneForderungen" class="metric-value green">0,00 €</div></div>
-        <div class="card metric"><div class="metric-label">Offene Zahlungen</div><div id="offeneZahlungen" class="metric-value red">0,00 €</div></div>
-        <div class="card metric"><div class="metric-label">Überfällig</div><div id="anzahlUeberfaellig" class="metric-value red">0</div></div>
-        <div class="card metric"><div class="metric-label">Einträge</div><div id="anzahlGesamt" class="metric-value">0</div></div>
+      <h1 class="page-title">Übersicht</h1>
+      <div class="metrics" style="grid-template-columns:1fr 1fr;">
+        <div class="metric"><div class="metric-label">Offene Forderungen</div><div class="metric-value green" id="offeneForderungen">0,00 €</div></div>
+        <div class="metric"><div class="metric-label">Offene Zahlungen</div><div class="metric-value red"   id="offeneZahlungen">0,00 €</div></div>
+        <div class="metric"><div class="metric-label">Überfällig</div><div class="metric-value red"         id="anzahlUeberfaellig">0</div></div>
+        <div class="metric"><div class="metric-label">Einträge gesamt</div><div class="metric-value"        id="anzahlGesamt">0</div></div>
       </div>
-      <div class="card panel">
+      <div class="panel">
         <div id="expenseDetails"></div>
       </div>
     </section>
 
-    <!-- Sicherung -->
+    <!-- ── Sicherung ── -->
     <section id="sicherung" class="page">
-      <h1 class="title">Sicherung</h1>
-      <div class="card panel">
-        <p style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:16px;">Exportiere deine Daten als JSON-Datei oder stelle sie aus einer Sicherungskopie wieder her.</p>
-        <div class="buttons">
-          <button class="btn btn-dark"  onclick="exportData()">Exportieren</button>
-          <button class="btn btn-light" onclick="document.getElementById('importFile').click()">Importieren</button>
+      <h1 class="page-title">Sicherung</h1>
+      <div class="panel">
+        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:18px;">Exportiere deine Daten als JSON-Datei oder stelle sie aus einer Sicherungskopie wieder her.</p>
+        <div class="btn-row">
+          <button class="btn btn-primary"   onclick="exportData()">Exportieren</button>
+          <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Importieren</button>
         </div>
         <input type="file" id="importFile" style="display:none;" accept=".json" onchange="importData(event)">
       </div>
     </section>
 
-    <!-- Quick-Add Modal -->
+    <!-- ── Quick-Add Modal ── -->
     <div id="quickAddModal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
+      <div class="modal-box">
+        <div class="modal-head">
           <h2>Eintrag erfassen</h2>
           <button class="modal-close" onclick="closeQuickAdd()">✕</button>
         </div>
         <div class="modal-body">
-          <div class="buttons" style="margin-bottom:16px;">
-            <button class="btn btn-dark"  id="qaTypeBekomme" onclick="setQuickAddType('bekomme')">Ich bekomme</button>
-            <button class="btn btn-light" id="qaTypeZahle"   onclick="setQuickAddType('zahle')">Ich zahle</button>
+          <div class="type-switcher">
+            <button class="type-btn active" id="qaTypeBekomme" onclick="setQuickAddType('bekomme')">Ich bekomme</button>
+            <button class="type-btn"        id="qaTypeZahle"   onclick="setQuickAddType('zahle')">Ich zahle</button>
           </div>
           <form id="quickAddForm">
             <input type="hidden" id="qaType" value="bekomme">
             <label id="qaNameLabel">Von wem</label>
             <input id="qaName" required placeholder="Name">
             <div class="row">
-              <div>
-                <label for="qaBetrag">Betrag €</label>
-                <input id="qaBetrag" type="number" step="0.01" min="0" required placeholder="0,00">
-              </div>
-              <div>
-                <label for="qaDatum">Fällig am</label>
-                <input id="qaDatum" type="date" required>
-              </div>
+              <div><label for="qaBetrag">Betrag €</label><input id="qaBetrag" type="number" step="0.01" min="0" required placeholder="0,00"></div>
+              <div><label for="qaDatum">Fällig am</label><input id="qaDatum" type="date" required></div>
             </div>
             <div id="qaKategorieWrap" style="display:none;">
               <label for="qaKategorie">Kategorie</label>
@@ -467,20 +692,20 @@
                 <option>Transport</option><option>Gesundheit</option><option>Schulden</option><option>Sonstiges</option>
               </select>
             </div>
-            <div class="buttons">
-              <button class="btn btn-dark"  type="submit">Speichern</button>
-              <button class="btn btn-light" type="button" onclick="closeQuickAdd()">Abbrechen</button>
+            <div class="btn-row">
+              <button class="btn btn-primary"   type="submit">Speichern</button>
+              <button class="btn btn-secondary" type="button" onclick="closeQuickAdd()">Abbrechen</button>
             </div>
           </form>
         </div>
       </div>
     </div>
 
-    <!-- Edit Modal -->
+    <!-- ── Edit Modal ── -->
     <div id="editModal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>Eintrag bearbeiten</h2>
+      <div class="modal-box">
+        <div class="modal-head">
+          <h2>Bearbeiten</h2>
           <button class="modal-close" onclick="closeEditModal()">✕</button>
         </div>
         <div class="modal-body">
@@ -490,14 +715,8 @@
             <label id="editNameLabel">Von wem</label>
             <input id="editName" required placeholder="Name">
             <div class="row">
-              <div>
-                <label for="editBetrag">Betrag €</label>
-                <input id="editBetrag" type="number" step="0.01" required>
-              </div>
-              <div>
-                <label for="editDatum">Fällig am</label>
-                <input id="editDatum" type="date" required>
-              </div>
+              <div><label for="editBetrag">Betrag €</label><input id="editBetrag" type="number" step="0.01" required></div>
+              <div><label for="editDatum">Fällig am</label><input id="editDatum" type="date" required></div>
             </div>
             <label id="editKategorieLabel" for="editKategorie">Kategorie</label>
             <select id="editKategorie" style="display:none;">
@@ -508,35 +727,32 @@
             <select id="editStatus"><option>Offen</option><option>Bezahlt</option><option>Erledigt</option></select>
             <label for="editNotiz">Notiz</label>
             <textarea id="editNotiz"></textarea>
-            <div class="buttons">
-              <button class="btn btn-dark"  type="submit">Speichern</button>
-              <button class="btn btn-light" type="button" onclick="closeEditModal()">Abbrechen</button>
+            <div class="btn-row">
+              <button class="btn btn-primary"   type="submit">Speichern</button>
+              <button class="btn btn-secondary" type="button" onclick="closeEditModal()">Abbrechen</button>
             </div>
           </form>
         </div>
       </div>
     </div>
 
-    <!-- Action Sheet -->
+    <!-- ── Action Sheet ── -->
     <div id="actionSheet" class="action-sheet">
-      <div class="action-sheet-overlay" onclick="closeActionSheet()"></div>
-      <div class="action-sheet-container">
-        <div class="action-sheet-group">
-          <div class="action-sheet-title" id="actionSheetTitle">Eintrag</div>
-          <button class="action-sheet-btn"           onclick="actionSheetEdit()">Bearbeiten</button>
-          <button class="action-sheet-btn btn-green" onclick="actionSheetErledigt()">Erledigt markieren</button>
-          <button class="action-sheet-btn btn-red"   onclick="actionSheetDelete()">Löschen</button>
+      <div class="as-overlay" onclick="closeActionSheet()"></div>
+      <div class="as-container">
+        <div class="as-group">
+          <div class="as-title" id="actionSheetTitle">Eintrag</div>
+          <button class="as-btn"           onclick="actionSheetEdit()">Bearbeiten</button>
+          <button class="as-btn as-btn-green" onclick="actionSheetErledigt()">Erledigt markieren</button>
+          <button class="as-btn as-btn-red"   onclick="actionSheetDelete()">Löschen</button>
         </div>
-        <button class="action-sheet-cancel-btn" onclick="closeActionSheet()">Abbrechen</button>
+        <button class="as-cancel" onclick="closeActionSheet()">Abbrechen</button>
       </div>
     </div>
 
   </div><!-- /app -->
 
-  <!-- FAB -->
   <button class="fab" id="fabBtn" onclick="openQuickAdd()">+ Eintrag</button>
-
-  <!-- Swipe hint -->
   <div class="swipe-hint" id="swipeHint">← Wischen zum Zurücknavigieren</div>
 
   <script>
@@ -544,13 +760,13 @@
     const sortState   = { bekomme: 'datum', zahle: 'datum' };
 
     // ── Navigation ────────────────────────────────────────────────
-    function showPage(pageId) {
+    function showPage(id) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById(pageId).classList.add('active');
-      document.getElementById('fabBtn').style.display = pageId === 'home' ? 'block' : 'none';
-      if (pageId === 'uebersicht') updateUebersicht();
-      if (pageId === 'home')       updateHome();
-      maybeShowSwipeHint(pageId);
+      document.getElementById(id).classList.add('active');
+      document.getElementById('fabBtn').style.display = id === 'home' ? 'block' : 'none';
+      if (id === 'uebersicht') updateUebersicht();
+      if (id === 'home')       updateHome();
+      maybeShowSwipeHint(id);
     }
 
     // ── Data ──────────────────────────────────────────────────────
@@ -560,22 +776,17 @@
     }
     function saveData(data) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      updateHome();
-      updateUebersicht();
-      updateDueCache();
+      updateHome(); updateUebersicht(); updateDueCache();
     }
     function addEntry(type, name, betrag, datum, status, notiz, kategorie = null) {
-      const data  = getData();
-      const entry = { id: Date.now(), name, betrag: parseFloat(betrag), datum, status, notiz, kategorie };
-      data[type].push(entry);
-      saveData(data);
-      renderLists();
+      const data = getData();
+      data[type].push({ id: Date.now(), name, betrag: parseFloat(betrag), datum, status, notiz, kategorie });
+      saveData(data); renderLists();
     }
     function deleteEntry(type, id) {
       const data = getData();
       data[type] = data[type].filter(e => e.id !== id);
-      saveData(data);
-      renderLists();
+      saveData(data); renderLists();
     }
     function markAsErledigt(type, id) {
       const data  = getData();
@@ -590,155 +801,151 @@
       document.getElementById(`sort-${type}-${key}`).classList.add('active');
       renderLists();
     }
-    function sortedEntries(entries, key) {
-      return [...entries].sort((a, b) => {
-        if (key === 'datum')  return a.datum.localeCompare(b.datum);
-        if (key === 'betrag') return b.betrag - a.betrag;
-        if (key === 'status') return a.status.localeCompare(b.status);
-        return 0;
-      });
+    function sorted(entries, key) {
+      return [...entries].sort((a, b) =>
+        key === 'datum'  ? a.datum.localeCompare(b.datum)    :
+        key === 'betrag' ? b.betrag - a.betrag                :
+        key === 'status' ? a.status.localeCompare(b.status)  : 0
+      );
     }
 
     // ── Action Sheet ──────────────────────────────────────────────
-    let _actionType = null, _actionId = null;
+    let _aType = null, _aId = null;
     function openActionSheet(type, id, name) {
-      _actionType = type; _actionId = id;
+      _aType = type; _aId = id;
       document.getElementById('actionSheetTitle').textContent = name;
       document.getElementById('actionSheet').classList.add('active');
     }
-    function closeActionSheet()  { document.getElementById('actionSheet').classList.remove('active'); }
-    function actionSheetEdit()   { closeActionSheet(); openEditModal(_actionType, _actionId); }
-    function actionSheetErledigt(){ closeActionSheet(); markAsErledigt(_actionType, _actionId); }
-    function actionSheetDelete() { closeActionSheet(); deleteEntry(_actionType, _actionId); }
+    function closeActionSheet()    { document.getElementById('actionSheet').classList.remove('active'); }
+    function actionSheetEdit()     { closeActionSheet(); openEditModal(_aType, _aId); }
+    function actionSheetErledigt() { closeActionSheet(); markAsErledigt(_aType, _aId); }
+    function actionSheetDelete()   { closeActionSheet(); deleteEntry(_aType, _aId); }
 
     // ── Render Lists ──────────────────────────────────────────────
+    function badgeClass(status) {
+      return status === 'Bezahlt' ? 'badge-paid' : status === 'Erledigt' ? 'badge-erledigt' : 'badge-open';
+    }
+
     function renderLists() {
       const data = getData();
-
-      function renderList(entries, containerId, type) {
-        const container = document.getElementById(containerId);
-        const sorted    = sortedEntries(entries, sortState[type]);
-        if (sorted.length === 0) {
-          container.innerHTML = `<div class="empty-state">
-            <div class="empty-state-icon">${type === 'bekomme' ? '↓' : '↑'}</div>
-            <div class="empty-state-text">Noch keine Einträge vorhanden.<br>Füge oben einen neuen Eintrag hinzu.</div>
-          </div>`;
+      ['bekomme', 'zahle'].forEach(type => {
+        const el     = document.getElementById(type + 'Liste');
+        const items  = sorted(data[type], sortState[type]);
+        if (!items.length) {
+          el.innerHTML = `<div class="empty"><div class="empty-icon">${type === 'bekomme' ? '↓' : '↑'}</div><div class="empty-text">Noch keine Einträge.<br>Füge oben einen neuen Eintrag hinzu.</div></div>`;
           return;
         }
-        container.innerHTML = '';
-        sorted.forEach(e => {
-          const item = document.createElement('div');
-          item.className = 'entry';
-          const sc = e.status === 'Bezahlt' ? 'status-paid' : e.status === 'Erledigt' ? 'status-erledigt' : 'status-open';
-          item.innerHTML = `
+        el.innerHTML = '';
+        items.forEach(e => {
+          const d = document.createElement('div');
+          d.className = 'entry';
+          d.innerHTML = `
             <div class="entry-top" onclick="openEditModal('${type}',${e.id})">
               <div><div class="entry-name">${e.name}</div><div class="entry-date">${e.datum}</div></div>
               <div class="entry-amount">${e.betrag.toFixed(2)} €</div>
             </div>
             <div class="entry-bottom">
-              <span class="entry-status ${sc}">${e.status}</span>
+              <span class="badge ${badgeClass(e.status)}">${e.status}</span>
               <button class="entry-delete" onclick="event.stopPropagation();deleteEntry('${type}',${e.id})">Löschen</button>
             </div>`;
-          container.appendChild(item);
+          el.appendChild(d);
         });
-      }
-
-      renderList(data.bekomme, 'bekommeListe', 'bekomme');
-      renderList(data.zahle,   'zahleListe',   'zahle');
+      });
     }
 
     // ── Home ──────────────────────────────────────────────────────
     function updateHome() {
-      const data    = getData();
-      const all     = [...data.bekomme, ...data.zahle];
-      const today   = new Date().toISOString().split('T')[0];
-      const active  = { b: data.bekomme.filter(e => e.status !== 'Erledigt'), z: data.zahle.filter(e => e.status !== 'Erledigt') };
-      const saldo   = active.b.reduce((s,e) => s + e.betrag, 0) - active.z.reduce((s,e) => s + e.betrag, 0);
+      const data  = getData();
+      const all   = [...data.bekomme, ...data.zahle];
+      const today = new Date().toISOString().split('T')[0];
+      const ab    = data.bekomme.filter(e => e.status !== 'Erledigt');
+      const az    = data.zahle.filter(e => e.status !== 'Erledigt');
+      const saldo = ab.reduce((s,e) => s+e.betrag,0) - az.reduce((s,e) => s+e.betrag,0);
 
-      document.getElementById('saldo').textContent          = saldo.toFixed(2) + ' €';
-      document.getElementById('heuteFaellig').textContent   = all.filter(e => e.datum === today && e.status === 'Offen').length;
-      document.getElementById('monatEinnahmen').textContent = active.b.reduce((s,e) => s + e.betrag, 0).toFixed(2) + ' €';
-      document.getElementById('monatAusgaben').textContent  = active.z.reduce((s,e) => s + e.betrag, 0).toFixed(2) + ' €';
+      const salEl = document.getElementById('saldo');
+      salEl.textContent = saldo.toFixed(2) + ' €';
+      salEl.className   = 'hero-amount' + (saldo < 0 ? ' negative' : '');
 
-      function renderQuickList(entries, id) {
+      document.getElementById('heuteFaellig').textContent   = all.filter(e => e.datum===today && e.status==='Offen').length;
+      document.getElementById('monatEinnahmen').textContent = ab.reduce((s,e)=>s+e.betrag,0).toFixed(2)+' €';
+      document.getElementById('monatAusgaben').textContent  = az.reduce((s,e)=>s+e.betrag,0).toFixed(2)+' €';
+
+      function renderQuick(entries, id) {
         const el = document.getElementById(id);
-        if (entries.length === 0) {
-          el.innerHTML = '<div class="empty-state" style="padding:14px 0;"><div class="empty-state-text">Keine Einträge</div></div>';
+        if (!entries.length) {
+          el.innerHTML = '<div class="empty" style="padding:12px 0;"><div class="empty-text">Keine Einträge</div></div>';
           return;
         }
         el.innerHTML = '';
-        entries.slice(0, 5).forEach(e => {
-          const item = document.createElement('div');
-          item.className = 'entry';
-          const type = data.bekomme.find(b => b.id === e.id) ? 'bekomme' : 'zahle';
-          item.onclick = () => openEditModal(type, e.id);
-          item.innerHTML = `<div class="entry-top"><div><div class="entry-name">${e.name}</div><div class="entry-date">${e.datum}</div></div><div class="entry-amount">${e.betrag.toFixed(2)} €</div></div>`;
-          el.appendChild(item);
+        entries.slice(0,5).forEach(e => {
+          const d    = document.createElement('div');
+          d.className = 'entry';
+          const type = data.bekomme.find(b => b.id===e.id) ? 'bekomme' : 'zahle';
+          d.onclick  = () => openEditModal(type, e.id);
+          d.innerHTML = `<div class="entry-top"><div><div class="entry-name">${e.name}</div><div class="entry-date">${e.datum}</div></div><div class="entry-amount">${e.betrag.toFixed(2)} €</div></div>`;
+          el.appendChild(d);
         });
       }
-
-      renderQuickList(all.filter(e => e.datum === today && e.status === 'Offen'), 'todayList');
-      renderQuickList(all.filter(e => e.datum < today   && e.status === 'Offen'), 'overdueList');
+      renderQuick(all.filter(e => e.datum===today && e.status==='Offen'), 'todayList');
+      renderQuick(all.filter(e => e.datum<today   && e.status==='Offen'), 'overdueList');
     }
 
     // ── Übersicht ─────────────────────────────────────────────────
     function updateUebersicht() {
       const data  = getData();
-      const today = new Date().toISOString().split('T')[0];
       const all   = [...data.bekomme, ...data.zahle];
+      const today = new Date().toISOString().split('T')[0];
 
-      document.getElementById('offeneForderungen').textContent = data.bekomme.filter(e => e.status==='Offen').reduce((s,e)=>s+e.betrag,0).toFixed(2)+' €';
-      document.getElementById('offeneZahlungen').textContent   = data.zahle.filter(e => e.status==='Offen').reduce((s,e)=>s+e.betrag,0).toFixed(2)+' €';
-      document.getElementById('anzahlUeberfaellig').textContent = all.filter(e => e.datum < today && e.status==='Offen').length;
-      document.getElementById('anzahlGesamt').textContent      = all.length;
+      document.getElementById('offeneForderungen').textContent  = data.bekomme.filter(e=>e.status==='Offen').reduce((s,e)=>s+e.betrag,0).toFixed(2)+' €';
+      document.getElementById('offeneZahlungen').textContent    = data.zahle.filter(e=>e.status==='Offen').reduce((s,e)=>s+e.betrag,0).toFixed(2)+' €';
+      document.getElementById('anzahlUeberfaellig').textContent = all.filter(e=>e.datum<today&&e.status==='Offen').length;
+      document.getElementById('anzahlGesamt').textContent       = all.length;
 
       const dc = document.getElementById('expenseDetails');
       dc.innerHTML = '';
 
-      if (all.length === 0) {
-        dc.innerHTML = '<div class="empty-state"><div class="empty-state-icon">◎</div><div class="empty-state-text">Noch keine Einträge vorhanden.</div></div>';
+      if (!all.length) {
+        dc.innerHTML = '<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">Noch keine Einträge vorhanden.</div></div>';
         return;
       }
 
-      function buildDetailItem(e, type) {
-        const item = document.createElement('div');
-        item.className = 'detail-item' + (e.status === 'Erledigt' ? ' item-erledigt' : '');
-        const sc = e.status === 'Bezahlt' ? 'status-paid' : e.status === 'Erledigt' ? 'status-erledigt' : 'status-open';
-        item.innerHTML = `
-          <div class="detail-item-header">
-            <span class="detail-item-name">${e.name}</span>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <span class="detail-item-amount">${e.betrag.toFixed(2)} €</span>
-              <button class="detail-item-delete" onclick="event.stopPropagation();deleteEntry('${type}',${e.id});updateUebersicht();" title="Löschen">✕</button>
+      function buildItem(e, type) {
+        const d = document.createElement('div');
+        d.className = 'detail-item' + (e.status==='Erledigt' ? ' item-erledigt' : '');
+        d.innerHTML = `
+          <div class="di-row">
+            <span class="di-name">${e.name}</span>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span class="di-amount">${e.betrag.toFixed(2)} €</span>
+              <button class="di-del" onclick="event.stopPropagation();deleteEntry('${type}',${e.id});updateUebersicht();">✕</button>
             </div>
           </div>
-          <div class="detail-item-meta">${e.datum}${e.kategorie ? ' · '+e.kategorie : ''} · <span class="entry-status ${sc}" style="font-size:10px;padding:2px 6px;">${e.status}</span></div>`;
-        item.addEventListener('click', () => openActionSheet(type, e.id, e.name));
-        return item;
+          <div class="di-meta">${e.datum}${e.kategorie?' · '+e.kategorie:''} · <span class="badge ${badgeClass(e.status)}" style="font-size:9px;padding:2px 6px;">${e.status}</span></div>`;
+        d.addEventListener('click', () => openActionSheet(type, e.id, e.name));
+        return d;
       }
 
-      function buildSection(entries, type, label, colorClass) {
-        if (entries.length === 0) return;
+      function buildSection(entries, type, label, totalClass) {
+        if (!entries.length) return;
         const byMonth = {};
-        entries.forEach(e => { const m = e.datum.slice(0,7); (byMonth[m] = byMonth[m]||[]).push(e); });
+        entries.forEach(e => { const m = e.datum.slice(0,7); (byMonth[m]=byMonth[m]||[]).push(e); });
 
         const sec = document.createElement('div');
         sec.className = 'detail-section';
-        sec.innerHTML = `<h3>${label}</h3>`;
+        sec.innerHTML = `<div class="detail-section-label">${label}</div>`;
 
-        Object.keys(byMonth).sort().reverse().forEach(month => {
-          const mes    = byMonth[month];
-          const total  = mes.filter(e => e.status !== 'Erledigt').reduce((s,e) => s+e.betrag, 0);
-          const [y, m] = month.split('-');
-          const lbl    = new Date(y, m-1).toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
-          const mg     = document.createElement('div');
+        Object.keys(byMonth).sort().reverse().forEach(m => {
+          const mes   = byMonth[m];
+          const total = mes.filter(e=>e.status!=='Erledigt').reduce((s,e)=>s+e.betrag,0);
+          const [y,mo]= m.split('-');
+          const name  = new Date(y,mo-1).toLocaleDateString('de-DE',{month:'long',year:'numeric'});
+          const mg    = document.createElement('div');
           mg.className = 'month-group';
-          mg.innerHTML = `<div class="month-header"><span class="month-label">${lbl}</span><span class="month-total ${colorClass}">${total.toFixed(2)} €</span></div>`;
-          const list = document.createElement('div');
+          mg.innerHTML = `<div class="month-header"><span class="month-name">${name}</span><span class="month-total ${totalClass}">${total.toFixed(2)} €</span></div>`;
+          const list  = document.createElement('div');
           list.className = 'detail-list';
-          mes.forEach(e => list.appendChild(buildDetailItem(e, type)));
-          mg.appendChild(list);
-          sec.appendChild(mg);
+          mes.forEach(e => list.appendChild(buildItem(e, type)));
+          mg.appendChild(list); sec.appendChild(mg);
         });
         dc.appendChild(sec);
       }
@@ -780,11 +987,11 @@
       document.getElementById('quickAddForm').reset();
     }
     function setQuickAddType(type) {
-      document.getElementById('qaType').value         = type;
-      document.getElementById('qaNameLabel').textContent = type === 'bekomme' ? 'Von wem' : 'An wen';
-      document.getElementById('qaKategorieWrap').style.display = type === 'zahle' ? 'block' : 'none';
-      document.getElementById('qaTypeBekomme').className = 'btn ' + (type === 'bekomme' ? 'btn-dark' : 'btn-light');
-      document.getElementById('qaTypeZahle').className   = 'btn ' + (type === 'zahle'   ? 'btn-dark' : 'btn-light');
+      document.getElementById('qaType').value = type;
+      document.getElementById('qaNameLabel').textContent = type==='bekomme' ? 'Von wem' : 'An wen';
+      document.getElementById('qaKategorieWrap').style.display = type==='zahle' ? 'block' : 'none';
+      document.getElementById('qaTypeBekomme').className = 'type-btn'+(type==='bekomme'?' active':'');
+      document.getElementById('qaTypeZahle').className   = 'type-btn'+(type==='zahle'  ?' active':'');
     }
     document.getElementById('quickAddForm').addEventListener('submit', e => {
       e.preventDefault();
@@ -794,14 +1001,14 @@
         document.getElementById('qaBetrag').value,
         document.getElementById('qaDatum').value,
         'Offen', '',
-        type === 'zahle' ? document.getElementById('qaKategorie').value : null);
+        type==='zahle' ? document.getElementById('qaKategorie').value : null);
       closeQuickAdd();
     });
 
     // ── Edit Modal ────────────────────────────────────────────────
     function openEditModal(type, entryId) {
       const data  = getData();
-      const entry = data[type].find(e => e.id === entryId);
+      const entry = data[type].find(e => e.id===entryId);
       if (!entry) return;
       document.getElementById('editType').value   = type;
       document.getElementById('editId').value     = entryId;
@@ -809,12 +1016,12 @@
       document.getElementById('editBetrag').value = entry.betrag;
       document.getElementById('editDatum').value  = entry.datum;
       document.getElementById('editStatus').value = entry.status;
-      document.getElementById('editNotiz').value  = entry.notiz || '';
+      document.getElementById('editNotiz').value  = entry.notiz||'';
       const ks = document.getElementById('editKategorie');
       const kl = document.getElementById('editKategorieLabel');
-      ks.style.display = kl.style.display = type === 'zahle' ? 'block' : 'none';
-      if (type === 'zahle') ks.value = entry.kategorie || 'Lebensmittel';
-      document.getElementById('editNameLabel').textContent = type === 'bekomme' ? 'Von wem' : 'An wen';
+      ks.style.display = kl.style.display = type==='zahle' ? 'block' : 'none';
+      if (type==='zahle') ks.value = entry.kategorie||'Lebensmittel';
+      document.getElementById('editNameLabel').textContent = type==='bekomme' ? 'Von wem' : 'An wen';
       document.getElementById('editModal').classList.add('active');
     }
     function closeEditModal() { document.getElementById('editModal').classList.remove('active'); }
@@ -823,38 +1030,36 @@
       const type    = document.getElementById('editType').value;
       const entryId = parseInt(document.getElementById('editId').value);
       const data    = getData();
-      const entry   = data[type].find(e => e.id === entryId);
+      const entry   = data[type].find(e => e.id===entryId);
       if (entry) {
         entry.name   = document.getElementById('editName').value;
         entry.betrag = parseFloat(document.getElementById('editBetrag').value);
         entry.datum  = document.getElementById('editDatum').value;
         entry.status = document.getElementById('editStatus').value;
         entry.notiz  = document.getElementById('editNotiz').value;
-        if (type === 'zahle') entry.kategorie = document.getElementById('editKategorie').value;
+        if (type==='zahle') entry.kategorie = document.getElementById('editKategorie').value;
         saveData(data); closeEditModal(); renderLists();
       }
     });
 
     // ── Export / Import ───────────────────────────────────────────
     function exportData() {
-      const blob = new Blob([JSON.stringify(getData(), null, 2)], { type: 'application/json' });
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement('a');
-      a.href = url; a.download = 'finanzapp_backup.json'; a.click();
-      URL.revokeObjectURL(url);
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(getData(),null,2)],{type:'application/json'}));
+      a.download = 'finanzapp_backup.json'; a.click();
     }
     function importData(event) {
       const file = event.target.files[0];
       if (!file) return;
-      const reader = new FileReader();
-      reader.onload = e => {
+      const r = new FileReader();
+      r.onload = e => {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(JSON.parse(e.target.result)));
           renderLists(); updateHome(); updateUebersicht();
           alert('Daten erfolgreich importiert!');
-        } catch { alert('Fehler beim Importieren der Datei'); }
+        } catch { alert('Fehler beim Importieren'); }
       };
-      reader.readAsText(file);
+      r.readAsText(file);
     }
 
     // ── Benachrichtigungen ────────────────────────────────────────
@@ -864,109 +1069,84 @@
     function updateDueCache() {
       const data  = getData();
       const today = new Date().toISOString().split('T')[0];
-      const due   = [...data.bekomme, ...data.zahle].filter(e => e.datum === today && e.status === 'Offen');
+      const due   = [...data.bekomme,...data.zahle].filter(e=>e.datum===today&&e.status==='Offen');
       localStorage.setItem('finanzapp_due_today', JSON.stringify(due));
-      if (navigator.serviceWorker?.controller)
-        navigator.serviceWorker.controller.postMessage({ type: 'UPDATE_DUE', entries: due });
+      navigator.serviceWorker?.controller?.postMessage({type:'UPDATE_DUE',entries:due});
     }
     function showDueNotification() {
-      if (Notification.permission !== 'granted') return;
-      const due  = JSON.parse(localStorage.getItem('finanzapp_due_today') || '[]');
+      if (Notification.permission!=='granted') return;
+      const due  = JSON.parse(localStorage.getItem('finanzapp_due_today')||'[]');
       if (!due.length) return;
-      const last = parseInt(localStorage.getItem(NOTIF_LAST_KEY) || '0');
-      if (Date.now() - last < NOTIF_INTERVAL) return;
+      const last = parseInt(localStorage.getItem(NOTIF_LAST_KEY)||'0');
+      if (Date.now()-last < NOTIF_INTERVAL) return;
       localStorage.setItem(NOTIF_LAST_KEY, Date.now().toString());
-      new Notification('Finanzapp – Heute fällig', {
-        body: due.length === 1 ? `"${due[0].name}" ist heute fällig (${due[0].betrag.toFixed(2)} €)` : `${due.length} Einträge sind heute fällig`,
-        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%232C4A3E"/><text x="32" y="46" text-anchor="middle" font-size="36" fill="white">€</text></svg>',
+      new Notification('Finanzapp – Heute fällig',{
+        body: due.length===1 ? `"${due[0].name}" ist heute fällig (${due[0].betrag.toFixed(2)} €)` : `${due.length} Einträge sind heute fällig`,
         tag: 'finanzapp-due'
       });
     }
     function initNotifications() {
       if (!('Notification' in window)) return;
-      if (Notification.permission === 'default') document.getElementById('notifBanner').style.display = 'block';
-      if (Notification.permission === 'granted') startNotifCycle();
+      if (Notification.permission==='default') document.getElementById('notifBanner').style.display='block';
+      if (Notification.permission==='granted') startNotifCycle();
     }
     async function requestNotifPermission() {
       if (!('Notification' in window)) return;
       const perm = await Notification.requestPermission();
-      document.getElementById('notifBanner').style.display = 'none';
-      if (perm === 'granted') {
-        const el = document.getElementById('notifStatus');
-        el.textContent = 'Benachrichtigungen aktiviert'; el.style.display = 'block';
-        setTimeout(() => { el.style.display = 'none'; }, 4000);
+      document.getElementById('notifBanner').style.display='none';
+      if (perm==='granted') {
+        const el=document.getElementById('notifStatus');
+        el.textContent='Benachrichtigungen aktiviert'; el.style.display='block';
+        setTimeout(()=>{el.style.display='none';},4000);
         startNotifCycle(); registerSW();
       }
     }
     function startNotifCycle() {
       updateDueCache();
-      const last = parseInt(localStorage.getItem(NOTIF_LAST_KEY) || '0');
-      if (Date.now() - last >= NOTIF_INTERVAL) showDueNotification();
-      setInterval(() => { updateDueCache(); showDueNotification(); }, NOTIF_INTERVAL);
+      const last=parseInt(localStorage.getItem(NOTIF_LAST_KEY)||'0');
+      if (Date.now()-last>=NOTIF_INTERVAL) showDueNotification();
+      setInterval(()=>{updateDueCache();showDueNotification();},NOTIF_INTERVAL);
     }
     async function registerSW() {
       if (!('serviceWorker' in navigator)) return;
-      const swCode = `
-const DUE_CACHE='finanzapp-due-v1';
-self.addEventListener('install',()=>self.skipWaiting());
-self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
-self.addEventListener('message',async event=>{
-  if(event.data?.type==='UPDATE_DUE'){const c=await caches.open(DUE_CACHE);await c.put('due',new Response(JSON.stringify(event.data.entries)));}
-});
-self.addEventListener('periodicsync',async event=>{
-  if(event.tag==='finanzapp-check-due')event.waitUntil(notifyDue());
-});
-async function notifyDue(){
-  const c=await caches.open(DUE_CACHE);const r=await c.match('due');if(!r)return;
-  const due=await r.json();if(!due.length)return;
-  await self.registration.showNotification('Finanzapp – Heute fällig',{
-    body:due.length===1?due[0].name+' ist heute fällig ('+due[0].betrag.toFixed(2)+' €)':due.length+' Einträge sind heute fällig',
-    icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%232C4A3E"/><text x="32" y="46" text-anchor="middle" font-size="36" fill="white">€</text></svg>',
-    tag:'finanzapp-due',renotify:true
-  });
-}`;
       try {
-        const reg = await navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode],{type:'application/javascript'})),{scope:'/'});
-        if ('periodicSync' in reg) {
-          const s = await navigator.permissions.query({name:'periodic-background-sync'});
-          if (s.state === 'granted') await reg.periodicSync.register('finanzapp-check-due',{minInterval:NOTIF_INTERVAL});
-        }
-      } catch(e) {}
+        const swCode=`const C='finanzapp-due-v1';self.addEventListener('install',()=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));self.addEventListener('message',async ev=>{if(ev.data?.type==='UPDATE_DUE'){const c=await caches.open(C);await c.put('due',new Response(JSON.stringify(ev.data.entries)));}});self.addEventListener('periodicsync',async ev=>{if(ev.tag==='finanzapp-check-due')ev.waitUntil((async()=>{const c=await caches.open(C);const r=await c.match('due');if(!r)return;const d=await r.json();if(!d.length)return;await self.registration.showNotification('Finanzapp',{body:d.length===1?d[0].name+' ist heute fällig':d.length+' Einträge fällig',tag:'finanzapp-due',renotify:true});})());});`;
+        const reg=await navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode],{type:'application/javascript'})),{scope:'/'});
+        if ('periodicSync' in reg){const s=await navigator.permissions.query({name:'periodic-background-sync'});if(s.state==='granted')await reg.periodicSync.register('finanzapp-check-due',{minInterval:NOTIF_INTERVAL});}
+      } catch(e){}
     }
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') { updateDueCache(); showDueNotification(); }
+    document.addEventListener('visibilitychange',()=>{
+      if (document.visibilityState==='visible'){updateDueCache();showDueNotification();}
     });
 
     // ── Swipe-Navigation ──────────────────────────────────────────
-    (function () {
-      let sx = 0, sy = 0;
-      document.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
-      document.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - sx;
-        const dy = e.changedTouches[0].clientY - sy;
-        const active = document.querySelector('.page.active');
-        if (!active || active.id === 'home') return;
-        if (dx > 70 && Math.abs(dy) < Math.abs(dx) * 0.6) showPage('home');
-      }, { passive: true });
+    (function(){
+      let sx=0,sy=0;
+      document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+      document.addEventListener('touchend',e=>{
+        const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+        const active=document.querySelector('.page.active');
+        if (!active||active.id==='home') return;
+        if (dx>70&&Math.abs(dy)<Math.abs(dx)*0.6) showPage('home');
+      },{passive:true});
     })();
 
     // ── Swipe Hint (einmalig) ─────────────────────────────────────
-    let _hintShown = !!localStorage.getItem('finanzapp_swipe_hint');
-    function maybeShowSwipeHint(pageId) {
-      if (_hintShown || pageId === 'home') return;
-      _hintShown = true;
-      localStorage.setItem('finanzapp_swipe_hint', '1');
-      const hint = document.getElementById('swipeHint');
-      setTimeout(() => hint.classList.add('show'), 500);
-      setTimeout(() => hint.classList.remove('show'), 3200);
+    let _hintShown=!!localStorage.getItem('finanzapp_swipe_hint');
+    function maybeShowSwipeHint(pageId){
+      if (_hintShown||pageId==='home') return;
+      _hintShown=true; localStorage.setItem('finanzapp_swipe_hint','1');
+      const h=document.getElementById('swipeHint');
+      setTimeout(()=>h.classList.add('show'),500);
+      setTimeout(()=>h.classList.remove('show'),3200);
     }
 
     // ── Init ──────────────────────────────────────────────────────
     renderLists();
     updateHome();
-    document.getElementById('fabBtn').style.display = 'block';
+    document.getElementById('fabBtn').style.display='block';
     initNotifications();
-    if (typeof Notification !== 'undefined' && Notification.permission === 'granted') registerSW();
+    if (typeof Notification!=='undefined'&&Notification.permission==='granted') registerSW();
   </script>
 </body>
 </html>
